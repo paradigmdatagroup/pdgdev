@@ -128,12 +128,14 @@ outputs to `inst/prod/`. There is an example development folder in
     #> └── worksheets
     #>     └── test.Rmd
 
-We can see test mimics a full developed lesson with `data/`, `libs/`,
-`css` (styling) , and `worksheets/`. All the code is in `slides.Rmd`,
-but we don’t want to share that with everyone:
+We can see `inst/dev/test` mimics a fully developed lesson with `data/`,
+`libs/`, `css` (styling) , and `worksheets/`.
+
+For example, the code is stored in `slides.Rmd`, but we might only want
+to share the output.
 
 To move only the course materials from `inst/dev/test/` into the
-production folder (`inst/dev/test/`), use `build_prod()`:
+production folder (`inst/prod/test/`), use `build_prod()`:
 
 ``` r
 build_prod("test")
@@ -175,7 +177,9 @@ Now the production folder only contains:
 
 The production folder can be placed in it’s own repo on [Paradigm Data
 Group’s GitHub organization](https://github.com/paradigmdatagroup) and
-used with `pdg::use_lesson()`:
+used with `pdg::use_lesson()`.
+
+See the example below with the **`"import"`** lesson:
 
 ``` r
 library(pdg)
@@ -213,7 +217,10 @@ Keep or delete the zip file?
 
 <img src="man/figures/use_lesson_new.png" width="100%" style="display: block; margin: auto;" />
 
-If I need to remove `test` folder from production, I can use:
+## Removing production folders
+
+If I need to remove `test` folder from production, I can use
+`remove_prod_dir()`:
 
 ``` r
 remove_prod_dir("test")
