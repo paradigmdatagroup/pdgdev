@@ -12,5 +12,5 @@ Other less-important features:
 
 +   Create worksheets from slide headers  
 +   Include data from packages in lesson (in `data/` folder?)
-+   Include styling options for xaringan slides (light/dark)  
++   Include styling options for `xaringan` slides (light/dark)  
 +   test with Quarto slides 
