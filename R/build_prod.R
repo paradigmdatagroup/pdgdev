@@ -44,10 +44,11 @@ create_prod_dir <- function(name) {
   root_dir <- rprojroot::find_root_file(criterion = rprojroot::from_wd)
   prod_dir <- file.path(root_dir, "inst/prod", basename(dev_dir))
   if (dir.exists(prod_dir)) {
-    cli::cli_alert(glue::glue("inst/prod/{name} already exists!"))
+    cli::cli_alert_info(glue::glue("inst/prod/{name} located"))
   } else {
+    cli::cli_text(glue::glue("{name} does not exist in inst/prod/..."))
     fs::dir_create(prod_dir)
-    cli::cli_alert(glue::glue("inst/prod/{name} created!"))
+    cli::cli_alert_success(glue::glue("inst/prod/{name} created!"))
   }
 }
 #' Create development pdf slides
@@ -73,15 +74,17 @@ create_pdf_slides <- function(name) {
       html_file <- list.files(path = dev_dir,
                               pattern = "slides.html$",
                               full.names = TRUE)
-      # create pdf path
-      pdf_file <- stringr::str_replace_all(html_file, ".html", ".pdf")
+      # create pdf path (dev)
+      pdf_dev_file <- stringr::str_replace_all(html_file, ".html", ".pdf")
+      # create pdf path (prod)
+      pdf_prod_file <- stringr::str_replace_all(pdf_dev_file, "/dev/", "/prod/")
       if (length(html_file) < 1) {
-        cli::cli_abort(glue::glue("no 'html' file in inst/dev/{name}!"))
+        cli::cli_abort(glue::glue("no 'html' slides in inst/dev/{name}!"))
       } else {
-      pagedown::chrome_print(input = html_file, output = pdf_file,
+      pagedown::chrome_print(input = html_file, output = pdf_prod_file,
         timeout = 360)
         cli::cli_alert_success(
-          glue::glue("'html' file converted to 'pdf' in inst/dev/{name}!"))
+          glue::glue("'html' slides converted to 'pdf' in inst/prod/{name}!"))
       }
 }
 #' Copy development pdf slides to production
@@ -116,7 +119,51 @@ copy_dev_slides <- function(name) {
           glue::glue("copied 'pdf' file to inst/prod/{name}!"))
       }
 }
+#' Create .Rproj file in production folder
+#'
+#' @param name name of folder/project
+#'
+#' @return folder in inst/prod
+#' @export create_rproj_file
+#'
+#' @importFrom fs path_wd
+#' @importFrom cli cli_abort
+#' @importFrom readr write_lines
+#'
+#' @examples
+#' create_rproj_file("test")
+create_rproj_file <- function(name) {
+  rproj_content <- "Version: 1.0
 
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+UseSpacesForTab: Yes
+NumSpacesForTab: 2
+Encoding: UTF-8
+
+RnwWeave: Sweave
+LaTeX: XeLaTeX
+
+  "
+  inst_dir <- fs::path_wd("inst/")
+  inst_prod_dir <- paste0(inst_dir, "/", "prod", collapse = "/")
+  if (!dir.exists(inst_prod_dir)) {
+    dir.create(inst_prod_dir)
+  }
+
+  inst_prod_rproj_dir <- paste0(inst_prod_dir, "/", name, collapse = "/")
+  if (!dir.exists(inst_prod_rproj_dir)) {
+    dir.create(inst_prod_rproj_dir)
+  } else {
+    rproj_file <- paste0(inst_prod_rproj_dir, "/", name, ".Rproj")
+    readr::write_lines(x = rproj_content, file = rproj_file)
+        cli::cli_alert(
+          glue::glue("{name}.Rproj file created in inst/prod/{name}!"))
+  }
+}
 #' Copy development data folder to production
 #'
 #' @param name name of development folder
@@ -241,57 +288,11 @@ copy_dev_worksheets <- function(name) {
          glue::glue("worksheet files copied to inst/prod/{name}!"))
      }
 }
-#' Create .Rproj file in production folder
-#'
-#' @param name name of folder/project
-#'
-#' @return folder in inst/prod
-#' @export create_rproj_file
-#'
-#' @importFrom fs path_wd
-#' @importFrom cli cli_abort
-#' @importFrom readr write_lines
-#'
-#' @examples
-#' create_rproj_file("test")
-create_rproj_file <- function(name) {
-  rproj_content <- "Version: 1.0
-
-RestoreWorkspace: Default
-SaveWorkspace: Default
-AlwaysSaveHistory: Default
-
-EnableCodeIndexing: Yes
-UseSpacesForTab: Yes
-NumSpacesForTab: 2
-Encoding: UTF-8
-
-RnwWeave: Sweave
-LaTeX: XeLaTeX
-
-  "
-  inst_dir <- fs::path_wd("inst/")
-  inst_prod_dir <- paste0(inst_dir, "/", "prod", collapse = "/")
-  if (!dir.exists(inst_prod_dir)) {
-    dir.create(inst_prod_dir)
-  }
-
-  inst_prod_rproj_dir <- paste0(inst_prod_dir, "/", name, collapse = "/")
-  if (!dir.exists(inst_prod_rproj_dir)) {
-    dir.create(inst_prod_rproj_dir)
-  } else {
-    rproj_file <- paste0(inst_prod_rproj_dir, "/", name, ".Rproj")
-    readr::write_lines(x = rproj_content, file = rproj_file)
-        cli::cli_alert(
-          glue::glue("{name}.Rproj file created in inst/prod/{name}!"))
-  }
-}
-
-#' Build Production Slides
+#' Build Production Materials
 #'
 #' @param name
 #'
-#' @return production slides in `inst/prod/`
+#' @return production materials in `inst/prod/`
 #' @export build_prod
 #'
 #' @importFrom cli cli_alert
@@ -304,6 +305,7 @@ build_prod <- function(name) {
 
   create_prod_dir(name = name)
   create_rproj_file(name = name)
+  create_pdf_slides(name = name)
   copy_dev_slides(name = name)
   copy_dev_data(name = name)
   copy_dev_worksheets(name = name)
@@ -318,7 +320,6 @@ build_prod <- function(name) {
     cli::cli_alert(glue::glue("Problem copying {prod_dir}"))
   }
 }
-
 #' Remove production folder
 #'
 #' @return removed folder message

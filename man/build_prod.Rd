@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_prod.R
 \name{build_prod}
 \alias{build_prod}
-\title{Build Production Slides}
+\title{Build Production Materials}
 \usage{
 build_prod(name)
 }
@@ -10,10 +10,10 @@ build_prod(name)
 \item{name}{}
 }
 \value{
-production slides in \verb{inst/prod/}
+production materials in \verb{inst/prod/}
 }
 \description{
-Build Production Slides
+Build Production Materials
 }
 \examples{
 build_prod("test")

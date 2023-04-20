@@ -1,10 +1,10 @@
 Package: pdgdev
-Title: What the Package Does (One Line, Title Case)
+Title: Develop Paradigm Data Group Lessons
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Martin", "Frigaard", , "mfrigaard@paradigmdata.io", role = c("aut", "cre"))
+Maintainer: Martin Frigaard <mfrigaard@paradigmdata.io>
+Description: Develop lesson materials and data. 
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
