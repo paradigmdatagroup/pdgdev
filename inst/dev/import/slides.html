@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Importing Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Martin Frigaard" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <meta name="description" content="Importing Data"/>
+    <meta name="generator" content="xaringan and remark.js"/>
+    <meta name="github-repo" content="mjfrigaard/pdg/"/>
+    <meta name="twitter:title" content="Importing Data"/>
+    <meta name="twitter:description" content="Importing Data"/>
+    <meta name="twitter:url" content="https://github.com/paradigmdatagroup/pdg/"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:creator" content="@mjfrigaard"/>
+    <meta name="twitter:site" content="@mjfrigaard"/>
+    <meta property="og:title" content="Importing Data"/>
+    <meta property="og:description" content="Importing Data"/>
+    <meta property="og:url" content="https://github.com/paradigmdatagroup/pdg/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="article:author" content="Martin Frigaard"/>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+layout: true
+
+&lt;!-- this adds the link footer to all slides, depends on footer-small class in css--&gt;
+
+&lt;div class="footer-small"&gt;&lt;span&gt;https://github.com/paradigmdatagroup/pdg/&lt;/div&gt;
+
+---
+name: title-slide
+class: title-slide, center, middle, inverse
+
+# Importing Data
+#.fancy[Getting Data into RStudio]
+
+&lt;br&gt;
+
+.large[by Martin Frigaard]
+
+Written: October 03 2022
+
+Updated: April 19 2023
+
+.footer-small[.right[.fira[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;[Created using the "λέξις" theme](https://jhelvy.github.io/lexis/index.html#what-does-%CE%BB%CE%AD%CE%BE%CE%B9%CF%82-mean)
+]]]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Outline
+
+.leftcol[
+
+- Packages for importing data 
+
+- Importing data using the IDE 
+
+- Making import steps reproducible
+
+- `worksheets/import.Rmd`
+
+]
+
+--
+
+.rightcol[
+
+- Importing data from local 
+
+- Downloading data from the web
+
+- Importing data using parameters (`params`) 
+
+- Importing multiple data files 
+
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Materials 
+
+The slides are in the `slides.pdf` file
+
+--
+
+&lt;br&gt;
+
+The materials for this training are in the `worksheets` folder: 
+
+```
+worksheets/
+    └── import.Rmd
+```
+
+---
+background-image: url(www/pdg-hex.png)
+class: center, middle, inverse
+background-position: 96% 4%
+background-size: 6%
+
+# .large[Import Data] 
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+.font90[.green[Open `import.Rmd` to follow along]]
+
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data 
+
+### Packages for importing data:
+
+
+| File type                           | Package                        |
+|-------------------------------------|--------------------------------|
+| SAS (`.sas7bdat`)                   | `haven`                        |
+| Excel (`.xlsx`, `.xls`)             | `readxl`, `openxlsx`           |
+| Plain Text (`.csv`, `.tsv`, `.txt`) | `readr`, `vroom`, `data.table` |
+
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Environment*)
+
+#### The .blue[Environment] Pane
+
+&lt;img src="www/rstudio-env.png" width="100%" height="100%" /&gt;
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Import Dataset*)
+
+.leftcol[
+
+#### Click .blue[Import Dataset]
+
+#### Click .blue[From SAS]
+
+]
+
+.rightcol[
+
+&lt;img src="www/rstudio-import-dataset.png" width="100%" height="100%" style="display: block; margin: auto auto auto 0;" /&gt;
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Required Packages*)
+
+#### If you see a prompt to install required packages, click .blue[Yes]
+
+&lt;img src="www/rstudio-dep-pkgs.png" width="60%" height="60%" style="display: block; margin: auto;" /&gt;
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Dialogue Box*)
+
+.leftcol20[
+
+.font80[**You will see the .blue[Import Statistical Data] Dialogue Box**]
+
+.font80[**Click .blue[Browse] and navigate to the `data/medical.sas7bdat` file**]
+
+]
+
+.rightcol80[
+
+&lt;img src="www/rstudio-import-dialogue-01.png" width="80%" height="80%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Dialogue Box*)
+
+.leftcol20[
+
+.font80[**You will see the path in .blue[File/URL]**]
+
+.font80[**A preview of the data will appear in .blue[Data Preview] **]
+
+]
+
+.rightcol80[
+
+&lt;img src="www/rstudio-import-dialogue-02.png" width="70%" height="70%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+&lt;img src="www/rstudio-import-dialogue-03.png" width="90%" height="90%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Dialogue Box*)
+
+
+.font90[**You see we have additional .blue[Import Options]**]
+
+&lt;img src="www/rstudio-import-dialogue-04.png" width="90%" height="90%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+--
+
+.font90[**We also see a .blue[Code Preview]. Click on the small copy icon, then click .blue[Import]**]
+
+&lt;img src="www/rstudio-import-dialogue-05.png" width="90%" height="90%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Data Viewer*)
+
+.font90[**RStudio imports the data and opens it in the .blue[Data Viewer]**]
+
+&lt;img src="www/rstudio-import-dialogue-06.png" width="100%" height="100%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (*Data Viewer*)
+
+.font90[**We can also see `medical` has been added to our .blue[Environment] pane**]
+
+&lt;img src="www/rstudio-import-dialogue-07.png" width="95%" height="95%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data 
+
+--
+
+&lt;br&gt;
+
+### .font120[Is what we did reproducible?]
+
+--
+
+&lt;br&gt;
+
+.font120[***.red[No, but it can be!]***]
+
+--
+
+&lt;br&gt;
+
+.font120[Open `import.Rmd` from the `worksheets` folder]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data 
+
+
+.leftcol20[
+
+In `Import.Rmd` 
+
+- Instructions inside `#` boxes won't run
+
+- Fill in `author` and `date` (inside quotes)
+
+]
+
+.rightcol80[
+
+&lt;img src="www/import-instructions.png" width="75%" height="75%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (from local)
+
+We already have the code to import `medical.sas7bdat` from local
+
+&lt;img src="www/rstudio-import-dialogue-05.png" width="90%" height="90%" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+--
+
+We need to adjust the file path to `../data/medical.sas7bdat`
+
+.leftcol[
+
+.code70[
+
+```
+. # importing with dialogue
+└── data/
+      └── medical.sas7bdat
+```
+
+]
+]
+
+.rightcol[
+
+.code70[
+
+```
+. # importing from file
+├── data/
+│   └──  medical.sas7bdat
+└── worksheets/
+    └──  import.Rmd
+```
+
+]
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (download and import)
+
+&lt;br&gt;
+
+We can also download the file from a `url`
+
+.code70[
+
+
+```r
+download.file(
+*   url = "http://www.principlesofeconometrics.com/sas/medical.sas7bdat",
+    )
+```
+
+]
+
+--
+
+And save this to a local `destfile`
+
+.code70[
+
+
+```r
+download.file(
+    url = "http://www.principlesofeconometrics.com/sas/medical.sas7bdat", 
+*   destfile = "../data/downloads/medical.sas7bdat")
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (download and import)
+
+&lt;br&gt;
+
+.font120[Now we can import the file from our `downloads/` folder]
+
+.leftcol35[
+
+.code60[
+
+```
+. # importing from downloads folder
+├── data/
+│   ├── medical.sas7bdat
+│   └── downloads/
+│            └── medical.sas7bdat
+└── worksheets/
+    └── import.Rmd
+```
+
+]
+
+]
+
+
+.rightcol65[
+
+&lt;br&gt;
+
+.code70[
+
+
+```r
+medical &lt;- read_sas("../data/downloads/medical.sas7bdat") 
+```
+
+]
+
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (parameters)
+
+.font90[For a more permanent solution, we can use parameters in our R Markdown file to store file location (or other metadata)]
+
+.code70[
+
+```yaml
+title: "May Report"
+author: "Joe Smith"
+date: "2022-11-30"
+output: html_document
+
+params:
+  sas_data_url: !r file.path("http://www.principlesofeconometrics.com/sas/medical.sas7bdat")
+  sas_data_dir: !r c("../data/sas/")
+```
+
+]
+
+--
+
+.code70[
+
+```r
+*download.file(url = params$sas_data_url,
+    )
+```
+]
+
+--
+
+.code70[
+
+
+```r
+download.file(url = params$sas_data_url, 
+*   destfile = params$sas_data_dir)
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (multiple files)
+
+If we have a folder with multiple files, we can reduce duplicated code with iteration. 
+
+--
+
+.leftcol[
+.code80[
+
+```
+. # importing multiple files
+├── data/sas/
+│   ├── elemapi-2000.sas7bdat
+│   ├── elemapi2-2000.sas7bdat
+│   ├── hsb2.sas7bdat
+│   └── nations.sas7bdat
+└── worksheets/
+    └── import.Rmd
+```
+
+]
+]
+
+--
+
+.rightcol[
+
+.code80[
+
+
+```r
+# create vector of files
+sas_filenames &lt;- list.files(
+            path = "../data/sas", 
+            full.names = TRUE)
+all_sas_data &lt;- sas_filenames |&gt; 
+    # give this vector names
+    purrr::set_names() |&gt; 
+    # use read_sas() on all files
+    purrr::map(.x = , .f = read_sas)
+```
+
+]
+
+.font90[`all_sas_data` is a list of datasets]
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Importing Data (multiple files)
+
+
+.font90[Each named according to their path in `data/sas/`]
+
+.code55[
+
+
+```r
+str(all_sas_data)
+*# $ ../data/sas/elemapi-2000.sas7bdat : tibble [400 × 21] (S3: tbl_df/tbl/data.frame)
+#   ..$ snum    : num [1:400] 906 889 887 876 888 ...
+#   .. ..- attr(*, "label")= chr "school number"
+#   ..$ dnum    : num [1:400] 41 41 41 41 41 98 98 108 108 108 ...
+#   .. ..- attr(*, "label")= chr "district number"
+#   .. [list output truncated]
+*#  $ ../data/sas/elemapi2-2000.sas7bdat: tibble [400 × 22] (S3: tbl_df/tbl/data.frame)
+#   ..$ snum    : num [1:400] 906 889 887 876 888 ...
+#   .. ..- attr(*, "label")= chr "school number"
+#   ..$ dnum    : num [1:400] 41 41 41 41 41 98 98 108 108 108 ...
+#   .. ..- attr(*, "label")= chr "district number"
+#   .. [list output truncated]
+*#  $ ../data/sas/hsb2.sas7bdat         : tibble [200 × 11] (S3: tbl_df/tbl/data.frame)
+#   ..$ id     : num [1:200] 3 5 16 35 8 19 6 1 4 22 ...
+#   ..$ female : num [1:200] 0 0 0 1 1 1 1 1 1 0 ...
+#   .. [list output truncated]
+*#  $ ../data/sas/nations.sas7bdat      : tibble [109 × 15] (S3: tbl_df/tbl/data.frame)
+#   ..$ country : chr [1:109] "Algeria" "Argentin" "Australi" "Austria" ...
+#   .. ..- attr(*, "label")= chr "Country"
+#   ..$ pop     : num [1:109] 21.9 30.5 15.8 7.6 100.6 ...
+#   .. ..- attr(*, "label")= chr "1985 population in millions"
+#   .. [list output truncated]
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Recap 
+
+.leftcol[
+
+.font120[Packages for importing common data files:]
+
+-   `haven`, `readxl`, `openxlsx`, `vroom`, or `data.table`
+
+.font120[Making import steps reproducible:]
+
+- Store in sequentially named script (i.e, `01-import.R`), in R Markdown chunk or R Markdown parameter
+
+]
+
+.rightcol[
+
+.font120[Use iteration to import/export multiple files:]
+
+```r
+# create vector of files paths
+data_filenames &lt;- list.files(
+            path = "path/to/data", 
+            full.names = TRUE)
+all_data &lt;- data_filenames |&gt; 
+    # give this vector names
+    purrr::set_names() |&gt; 
+    # use read_*() function all files
+    purrr::map(.x = , .f = read_*)
+```
+
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# More resources
+
+.font120[
+
+- [Data import cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf)
+
+- [Data import section of R for data science](https://r4ds.hadley.nz/data-import.html) 
+
+- [`readxl` package website](https://readxl.tidyverse.org/) (and [workflows](https://readxl.tidyverse.org/articles/readxl-workflows.html))
+
+- [`haven` package website](https://haven.tidyverse.org/)
+
+- [`readr` package website](https://readr.tidyverse.org/)
+
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

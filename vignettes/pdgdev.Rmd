@@ -1,0 +1,19 @@
+---
+title: "pdgdev"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pdgdev}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r pkg}
+library(pdgdev)
+```

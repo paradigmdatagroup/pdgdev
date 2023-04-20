@@ -1,0 +1,210 @@
+---
+#############################################################
+#                                                           #
+#   Click on "Knit" in RStudio to render this worksheet.    #
+#                                                           #
+#############################################################
+title: "Objects in R"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+options(repos = "https://cloud.r-project.org")
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      error = TRUE)
+```
+
+## Atomic vectors
+
+### Creating vectors
+
+Create logical, integer, double, and character vectors below
+
+```{r , eval=FALSE}
+______ <- c(TRUE, FALSE)
+______ <- c(4L, 7L)
+______ <- c(2.2, 8.09)
+______ <- c("A", "D")
+```
+
+### Check `typeof()` 
+
+```{r , eval=FALSE}
+typeof(______)
+typeof(______)
+typeof(______)
+typeof(______)
+```
+
+### Check `class()`
+
+```{r , eval=FALSE}
+class(______)
+class(______)
+class(______)
+class(______)
+```
+
+## S3 Vectors 
+
+```{r , eval=FALSE}
+# create fct_vec
+______ <- factor(
+        x = c("Medium", "Low", "High"), 
+        levels = c("Low", "Medium", "High"))
+# create date_vec
+______ <- c(Sys.Date(), Sys.Date() + 1)
+# create dt_vec
+______ <- c(Sys.time(), Sys.time() + (86400*365))
+# create difft_vec
+______ <- difftime(
+            time1 = Sys.time(), 
+            time2 = Sys.time() + (86400*365), 
+            units = "days")
+```
+
+### Check `typeof()` 
+
+```{r , eval=FALSE}
+typeof(______)
+typeof(______)
+typeof(______)
+typeof(______)
+```
+
+### Check `class()`
+
+```{r , eval=FALSE}
+class(______)
+class(______)
+class(______)
+class(______)
+```
+
+### Check `attributes()`
+
+Factor attributes
+
+```{r , eval=FALSE}
+attributes(______)
+```
+
+Date/Datetime attributes
+
+```{r , eval=FALSE}
+attributes(______)
+attributes(______)
+```
+
+Difftime attributes
+
+```{r , eval=FALSE}
+attributes(______)
+```
+
+## Lists 
+
+Create atomic list 
+
+```{r , eval=FALSE}
+atomic_list <- list(
+    'logical vector' = ______,
+    'integer vector' = ______,
+    'double vector' = ______,
+    'character vector' = ______
+)
+atomic_list
+```
+
+
+Create s3_list 
+
+```{r , eval=FALSE}
+s3_list <- list(
+    'date vector' = ______,
+    'datetime vector' = ______,
+    'difftime vector' = ______
+)
+s3_list
+```
+
+Create list of lists
+
+```{r , eval=FALSE}
+vector_list <- list(
+    'S3 list' = ______,
+    'Atomic list' = ______
+)
+vector_list
+```
+
+## Data frames 
+
+Create my_df from the logical, integer, double, 
+
+```{r , eval=FALSE}
+my_df <- data.frame(
+    log_col = ______,
+    int_col = ______,
+    dbl_col = ______,
+    chr_col = ______,
+    date_col = ______,
+    dt_col = ______
+)
+my_df
+```
+
+### Check structure 
+
+```{r , eval=FALSE}
+str(______)
+```
+
+### Check `class()`
+
+```{r , eval=FALSE}
+class(______)
+```
+
+### Check `typeof()` 
+
+```{r , eval=FALSE}
+class(______)
+```
+
+## Tibbles
+
+```{r , eval=FALSE}
+my_tbl <- tibble(
+    log_col = ______,
+    int_col = ______,
+    dbl_col = ______,
+    chr_col = ______,
+    date_col = ______,
+    dt_col = ______
+)
+my_tbl
+```
+
+
+### Check structure 
+
+```{r , eval=FALSE}
+str(______)
+```
+
+### Check `class()`
+
+```{r , eval=FALSE}
+class(______)
+```
+
+### Check `typeof()` 
+
+```{r , eval=FALSE}
+class(______)
+```

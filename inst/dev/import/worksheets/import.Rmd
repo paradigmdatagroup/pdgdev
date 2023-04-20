@@ -1,0 +1,86 @@
+---
+#############################################################
+#                                                           #
+#   Click on "Knit" in RStudio to render this worksheet.    #
+#                                                           #
+#############################################################
+title: "Import"
+author: ""
+date: ""
+output: html_document
+#############################################################
+#                                                           #
+#   Change the eval=FALSE to eval=TRUE to run the code      #
+#                                                           #
+#############################################################
+params:
+  sas_data_url: !r file.path("http://www.principlesofeconometrics.com/sas/medical.sas7bdat")
+  sas_data_dir: !r c("../data/sas/")
+---
+
+```{r setup, include=FALSE}
+library(rmarkdown)
+library(knitr)
+library(haven)
+library(readxl)
+library(openxlsx)
+library(readr)
+library(data.table)
+options(repos = "https://cloud.r-project.org")
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      error = TRUE)
+```
+
+## Import Local SAS files
+
+```{r import-local, eval=FALSE}
+medical <- read_sas("../data/medical.sas7bdat", NULL)
+View(medical)
+```
+
+## Download file, then import
+
+Sometimes we want to use a URL to save the file, then import from a local folder. 
+```{r download-sas, eval=FALSE}
+download.file(
+    url = "http://www.principlesofeconometrics.com/sas/medical.sas7bdat", destfile = "../data/downloads/medical.sas7bdat")
+```
+
+Now we can import from `../data/downloads/`
+
+```{r import-download, eval=FALSE}
+medical <- read_sas("../data/downloads/medical.sas7bdat")
+```
+
+## Importing with parameters
+
+Add the following code to the YAML header (at the top of this file):
+
+```{.yaml}
+params:
+  sas_data_url: !r file.path("http://www.principlesofeconometrics.com/sas/medical.sas7bdat")
+  sas_data_dir: !r c("../data/sas/")
+```
+
+Now we can access the URL and downloads folder throughout the document using `params$sas_data_url` and `params$sas_data_dir`
+
+```{r params, eval=FALSE}
+params$sas_data_url
+params$sas_data_dir
+```
+
+## Importing multiple data files 
+
+What if we have a folder of SAS files we'd like to import? We can accomplish this with some help from `purrr` and R's `list.files()` function. 
+
+```{r all_sas_data, eval=FALSE}
+# create vector of files
+sas_filenames <- list.files(params$sas_data_dir, full.names = TRUE)
+# pass this vector 
+all_sas_data <- sas_filenames |> 
+    purrr::set_names() |> 
+    map(.x = , .f = read_sas)
+str(all_sas_data, list.len = 4)
+```
+

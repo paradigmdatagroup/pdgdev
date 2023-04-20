@@ -1,0 +1,253 @@
+---
+title: "R Markdown Tables"
+author: ""
+date: ""
+output: 
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+    self_contained: true
+    
+---
+
+<!--
+#############################################################
+#                                                           #
+#   Change the eval=FALSE to eval=TRUE to run the code      #
+#                                                           #
+#############################################################
+-->
+
+```{r setup, include=FALSE}
+library(NHANES)
+library(gtsummary)
+library(rmarkdown)
+options(repos = "https://cloud.r-project.org")
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      error = TRUE)
+```
+
+<!--
+#############################################################
+#                                                           #
+#   Click on "Knit" in RStudio to render this worksheet.    #
+#                                                           #
+#############################################################
+-->
+
+## Import NHANES .csv file {.tabset}
+
+Below we import a subset of the NHANES data from the [NHANES package](https://cran.r-project.org/web/packages/NHANES/index.html)
+
+### Import 
+
+Below we import the data with [`data.table::fread()`](https://datatable.readthedocs.io/en/latest/api/dt/fread.html)
+
+```{r import-local, eval=TRUE}
+nhanes_11_12 <- data.table::fread(input = "../data/csv/nhanes_11_12.csv")
+glimpse(nhanes_11_12)
+```
+
+### Codebook
+
+The variable names and definitions are below:
+
+`id`: Participant identifier.
+
+`gender`: Gender (sex) of study participant coded as `male` or `female`
+
+`age`: Age in years at screening of study participant. Note: Subjects 80 years or older were recorded as 80.
+
+`race3`: Reported race of study participant, including non-Hispanic Asian category: Mexican, Hispanic, White, Black, Asian, or Other. Not availale for 2009-10.
+
+`education`: Educational level of study participant Reported for participants aged 20 years or older. One of 8thGrade, 9-11thGrade, HighSchool, SomeCollege, or CollegeGrad.
+
+`hh_income`: Total annual gross income for the household in US dollars.
+
+`poverty`: A ratio of family income to poverty guidelines. Smaller numbers indicate more poverty.
+
+`weight`: Weight in kg
+
+`height`: Standing height in cm. Reported for participants aged 2 years or older.
+
+`bmi`: Body mass index (weight/height^2 in kg/m^2). Reported for participants aged 2 years or older.
+
+`bp_sys_ave`: Combined systolic blood pressure reading, following the procedure outlined for BPXSAR.
+
+`bp_dia_ave`: Combined diastolic blood pressure reading, following the procedure outlined for BPXDAR.
+
+`testosterone`: Testerone total (ng/dL). Reported for participants aged 6 years or older. Not available for 2009-2010.
+
+`tot_chol`: Total HDL cholesterol in mmol/L. Reported for participants aged 6 years or older.
+
+`diabetes`: Study participant told by a doctor or health professional that they have diabetes. Reported for participants aged 1 year or older as Yes or No.
+
+`sleep_hrs_night`: Self-reported number of hours study participant usually gets at night on weekdays or workdays. Reported for participants aged 16 years and older.
+
+`phys_active_days`: Number of days in a typical week that participant does moderate or vigorous-intensity activity. Reported for participants 12 years or older.
+
+## Calculate descriptives {.tabset}
+
+We can calculate the descriptive statistics with [`dplyr`](https://dplyr.tidyverse.org/). 
+
+### `descriptives`
+
+```{r descriptives}
+descriptives <- nhanes_11_12 |> 
+    mutate(ht_meters = height*0.01, # calculate new vars
+           bmi = weight/ht_meters^2) |> 
+    group_by(diabetes) |> # calculate by diabetes
+    summarise(n = n(), # get total
+              across(c(age, bmi, bp_sys_ave, tot_chol), # numeric variables
+              mean, na.rm = TRUE)) # calculate mean 
+descriptives
+```
+
+### `big_descriptives`
+
+```{r big_descriptives}
+big_descriptives <- nhanes_11_12 |>
+    dplyr::select(-id) |> # remove id
+    dplyr::mutate(ht_meters = height * 0.01, # calculate new vars
+                  bmi = weight / ht_meters ^ 2) |>
+    dplyr::group_by(diabetes) |> # calculate by diabetes
+    dplyr::summarise(n = n(), # get total
+        dplyr::across(.cols = where(is.numeric), # all numeric variables
+                      .fns =  mean, na.rm = TRUE)) # calculate mean 
+big_descriptives
+```
+
+## `knitr::kable()` {.tabset}
+
+Below are tables created with `knitr::kable()`
+
+### Basic `kable` table 
+
+```{r}
+knitr::kable(descriptives)
+```
+
+### `kable` (`digits` & `col.names`)
+
+```{r}
+knitr::kable(descriptives, digits = 2, 
+    col.names = c("Diabetic", "N", "Age", "BMI", 
+        "Sys BP (Avg)", "Total Chol"))
+```
+
+### `kable` (`caption`)
+
+```{r}
+knitr::kable(descriptives, digits = 2, 
+    col.names = c("Diabetic", "N", "Age", "BMI", 
+        "Sys BP (Avg)", "Total Chol"), 
+    caption = "Descriptive Statistics")
+```
+
+
+
+## `rmarkdown::paged_table()`
+
+`paged_table()`s are great for larger tables (but don't work very well with PDFs)
+
+```{r}
+rmarkdown::paged_table(big_descriptives)
+```
+
+
+## `gtsummary::tbl_cross()` {.tabset}
+
+The `gtsummary` package builds beautiful html tables. We'll cover `tbl_cross()` and `tbl_summary()` below.
+
+`tbl_cross()` gives counts/percents of two categorical variables.
+
+### Basic `tbl_cross()`
+
+Below is a basic example of a cross-tabs table with `gtsummary`. 
+
+```{r}
+library(gtsummary)
+tbl_vars <- dplyr::select(nhanes_11_12, 
+        diabetes, race3)
+gtsummary::tbl_cross(
+    data = tbl_vars,
+    row = race3, col = diabetes)
+```
+
+
+### `tbl_cross()` labels
+
+Add lables with the [`labelled` package.](https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html) 
+
+```{r}
+library(labelled)
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes)
+```
+
+### `%`s and p-values
+
+`gtsummary` had multiple options for adding percentages, p-values, and more.
+
+```{r}
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes, 
+    percent = "cell") |> 
+    add_p() 
+```
+
+## `gtsummary::tbl_summary()` {.tabset}
+
+The `gt_summary::tbl_summary()` function creates publication-quality summary tables with multiple statistical summary options.
+
+### Basic `tbl_summary()`
+
+```{r}
+tbl_vars <- nhanes_11_12 |> 
+    dplyr::mutate(ht_meters = height*0.01,
+           bmi = weight/ht_meters^2) |> 
+    dplyr::select(age, gender, 
+        bmi, bp_sys_ave, bp_dia_ave)
+var_label(tbl_vars) <- list(
+    age = "Age",
+    gender = "Gender",
+    bmi = "BMI",
+    bp_sys_ave = "Sys Avg",
+    bp_dia_ave = "Dia Avg")
+gtsummary::tbl_summary(tbl_vars)
+```
+
+### Grouped `tbl_summary()`
+
+```{r}
+tbl_vars <- nhanes_11_12 |> 
+    dplyr::mutate(
+     ht_meters = height*0.01,
+     bmi = weight/ht_meters^2,
+     diabetes = if_else(diabetes == "Yes", 
+                 "Diabetic", "Healthy")) |> 
+    dplyr::select(age, diabetes, gender, 
+        bmi, bp_sys_ave, bp_dia_ave)
+var_label(tbl_vars) <- list(
+    age = "Age",
+    diabetes = "Diabetic",
+    gender = "Gender",
+    bmi = "BMI",
+    bp_sys_ave = "Sys Avg",
+    bp_dia_ave = "Dia Avg")
+gtsummary::tbl_summary(tbl_vars, 
+    by = diabetes)
+```
+
+## Summary 
+
+The average age in `nhanes_11_12` is `r round(mean(nhanes_11_12$age, na.rm = TRUE), 2)`. The correlation between age and average systolic blood pressure is `r round(cor(x = nhanes_11_12$age, y = nhanes_11_12$bp_sys_ave), 2)`
+

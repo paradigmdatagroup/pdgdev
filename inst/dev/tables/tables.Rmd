@@ -1,0 +1,594 @@
+---
+title: "R Markdown Tables"
+subtitle: "Creating Tables in R Markdown"
+author: "Martin Frigaard"
+institute: "Paradigm Data Group"
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - css/lexis.css
+      - css/lexis-fonts.css
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r meta, echo=FALSE}
+library(metathis)
+meta() |>
+  meta_general(
+    description = "R Markdown Tables",
+    generator = "xaringan and remark.js"
+  ) |>
+  meta_name("github-repo" = "mjfrigaard/pdg/") |>
+  meta_social(
+    title = "R Markdown Tables",
+    url = "https://github.com/paradigmdatagroup/pdg/",
+    og_type = "website",
+    og_author = "Martin Frigaard",
+    twitter_card_type = "summary",
+    twitter_creator = "@mjfrigaard"
+  )
+```
+
+```{r setup, include=FALSE}
+dateWritten <- format(as.Date('2022-10-03'), format = "%B %d %Y")
+today <- format(Sys.Date(), format = "%B %d %Y")
+library(knitr)
+library(rmarkdown)
+library(fontawesome)
+library(gtsummary)
+options(
+    htmltools.dir.version = FALSE,
+    knitr.table.format = "html",
+    knitr.kable.NA = ''
+)
+knitr::opts_chunk$set(
+    warning = FALSE,
+    message = FALSE,
+    fig.path = "www/",
+    fig.width = 7.252,
+    fig.height = 4,
+    comment = " ",
+    fig.retina = 3 # Better figure resolution
+)
+# Enables the ability to show all slides in a tile overview by pressing "o"
+xaringanExtra::use_tile_view()
+xaringanExtra::use_panelset()
+xaringanExtra::use_clipboard()
+xaringanExtra::use_share_again()
+xaringanExtra::style_share_again(share_buttons = "all")
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = FALSE
+)
+```
+
+layout: true
+
+<!-- this adds the link footer to all slides, depends on footer-small class in css-->
+
+<div class="footer-small"><span>https://github.com/paradigmdatagroup/pdg/</div>
+
+---
+name: title-slide
+class: title-slide, center, middle, inverse
+
+# `r rmarkdown::metadata$title`
+#.fancy[`r rmarkdown::metadata$subtitle`]
+
+<br>
+
+.large[by Martin Frigaard]
+
+Written: `r dateWritten`
+
+Updated: `r today`
+
+.footer-large[.right[.fira[
+<br><br><br><br><br>[Created using the "λέξις" theme](https://jhelvy.github.io/lexis/index.html#what-does-%CE%BB%CE%AD%CE%BE%CE%B9%CF%82-mean)
+]]]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Materials 
+
+The slides are in the `slides.pdf` file
+
+--
+
+The materials for this training are in the `worksheets` folder: 
+
+```
+worksheets
+├── import.Rmd
+├── export.Rmd
+├── objects.Rmd
+├── rmd-basic.Rmd
+├── rmd-tables.Rmd
+└── rmd-visualizations.Rmd
+```
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Outline 
+
+<br>
+
+.leftcol[
+
+#### 1. Importing data
+
+#### 2. Common Data Objects 
+
+#### 3. R Markdown 
+
+]
+
+--
+
+.rightcol[
+
+#### 4. R Markdown Data Visualizations
+
+#### 5. .red[R Markdown Tables]
+
+#### 6. Exporting Data 
+
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: center, middle, inverse
+background-position: 96% 4%
+background-size: 6%
+
+
+# .large[R Markdown Tables]
+
+--
+
+<br><br>
+
+.font90[.green[Open `rmd-tables.Rmd` to follow along]]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+
+# R Markdown Tables
+
+Import the `nhanes_11_12` data from the `data/csv/` folder.
+
+.code70[
+```{r , eval=FALSE}
+nhanes_11_12 <- data.table::fread(input = "../data/csv/nhanes_11_12.csv")
+glimpse(nhanes_11_12)
+```
+]
+
+.code60[
+```{r nhanes_11_12, echo=FALSE, eval=TRUE}
+nhanes_11_12 <- data.table::fread(
+    input = "data/csv/nhanes_11_12.csv")
+glimpse(nhanes_11_12)
+```
+]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+
+# R Markdown Tables
+
+Check out the codebook in the `rmd-tables.Rmd` file to get a better understanding of the NHANES variables.  
+
+--
+
+### Calculate Descriptives 
+
+Below we calculate the descriptive statistics with some help from  [`dplyr`](https://dplyr.tidyverse.org/)
+
+--
+
+```{r descriptives}
+descriptives <- nhanes_11_12 |> 
+    mutate(ht_meters = height*0.01,
+           bmi = weight/ht_meters^2) |> 
+    group_by(diabetes) |> 
+    summarise(n = n(), 
+              across(c(age, bmi, bp_sys_ave, tot_chol), 
+              mean, na.rm = TRUE))
+```
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+
+.leftcol[
+If we print `descriptives` to the console, we see a `tibble` output
+
+<br>
+
+.code70[
+```{r , eval=FALSE}
+descriptives
+```
+]
+.code55[
+```{r , eval=TRUE, echo=FALSE}
+descriptives
+```
+]
+]
+
+
+--
+
+.rightcol[
+We can use `knitr::kable()` to get a basic formatted table. 
+
+<br>
+
+.font70[
+```{r}
+knitr::kable(descriptives)
+```
+]
+]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+`knitr::kable()` allows us to adust the contents of the table with arguments like `digits` and `col.names`
+
+.code80[
+```{r}
+knitr::kable(descriptives, digits = 2, 
+    col.names = c("Diabetic", "N", "Age", "BMI", 
+        "Sys BP (Avg)", "Total Chol"))
+```
+]
+
+<br>
+
+Read more about `kable` table options [here](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html) 
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+If we're looking at larger tables, we can use the `rmarkdown::paged_table()` function
+
+<br>
+
+.code80[
+```{r}
+big_descriptives <- nhanes_11_12 |>
+    dplyr::select(-id) |> # remove id
+    dplyr::mutate(ht_meters = height * 0.01, # calculate new vars
+                  bmi = weight / ht_meters ^ 2) |>
+    dplyr::group_by(diabetes) |> # calculate by diabetes
+    dplyr::summarise(n = n(), # get total
+        dplyr::across(.cols = where(is.numeric), # all numeric variables
+                      .fns =  mean, na.rm = TRUE)) # calculate mean 
+```
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+If we're looking at larger tables, we can use the `rmarkdown::paged_table()` function
+
+<br>
+
+```{r}
+rmarkdown::paged_table(big_descriptives)
+```
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+The `gtsummary()` package has great functions for creating common tables. 
+
+.leftcol[
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(gtsummary)
+tbl_vars <- dplyr::select(nhanes_11_12, 
+        diabetes, race3)
+gtsummary::tbl_cross(
+    data = tbl_vars,
+    row = race3, col = diabetes)
+```
+
+]
+
+.rightcol[
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(gtsummary)
+tbl_vars <- dplyr::select(nhanes_11_12, 
+        diabetes, race3)
+gtsummary::tbl_cross(
+    data = tbl_vars,
+    row = race3, col = diabetes)
+```
+
+
+]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+We can add lables with the [`labelled` package.](https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html) 
+
+.leftcol[
+
+```{r , eval=FALSE, echo=TRUE}
+library(labelled)
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes)
+```
+
+]
+
+.rightcol[
+
+```{r , echo=FALSE, eval=TRUE}
+library(labelled)
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes)
+```
+
+]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+Options for adding percentages and p-values `add_p()`
+
+.leftcol[
+
+```{r , eval=FALSE, echo=TRUE}
+library(labelled)
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes, 
+    percent = "cell") |> 
+    add_p() 
+```
+
+]
+
+.rightcol[
+
+```{r , echo=FALSE, eval=TRUE}
+library(labelled)
+var_label(tbl_vars) <- list(
+    race3 = "Race",
+    diabetes = "Diabetes Status")
+tbl_cross(data = tbl_vars, 
+    row = race3, col = diabetes, 
+    percent = "cell") |> 
+    add_p() 
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+The `gt_summary::tbl_summary()` function creates publication-quality summary tables with multiple statistical summary options.
+
+.leftcol[
+
+.code70[
+
+```{r}
+tbl_vars <- nhanes_11_12 |> 
+    dplyr::mutate(ht_meters = height*0.01,
+           bmi = weight/ht_meters^2) |> 
+    dplyr::select(age, gender, 
+        bmi, bp_sys_ave, bp_dia_ave)
+var_label(tbl_vars) <- list(
+    age = "Age",
+    gender = "Gender",
+    bmi = "BMI",
+    bp_sys_ave = "Sys Avg",
+    bp_dia_ave = "Dia Avg")
+```
+
+]
+
+]
+
+.rightcol[
+
+```{r}
+gtsummary::tbl_summary(tbl_vars)
+```
+
+
+]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+We can also create grouped summaries with `gtsummary::tbl_summary(by = )`:
+
+.leftcol[
+
+.code70[
+
+```{r}
+tbl_vars <- nhanes_11_12 |> 
+    dplyr::mutate(
+     ht_meters = height*0.01,
+     bmi = weight/ht_meters^2,
+     diabetes = if_else(diabetes == "Yes", 
+                 "Diabetic", "Healthy")) |> 
+    dplyr::select(age, diabetes, gender, 
+        bmi, bp_sys_ave, bp_dia_ave)
+var_label(tbl_vars) <- list(
+    age = "Age",
+    diabetes = "Diabetic",
+    gender = "Gender",
+    bmi = "BMI",
+    bp_sys_ave = "Sys Avg",
+    bp_dia_ave = "Dia Avg")
+```
+
+]
+
+]
+
+.rightcol[
+
+```{r}
+gtsummary::tbl_summary(tbl_vars, 
+    by = diabetes)
+```
+
+
+]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+### R Markdown also supports inline R code 
+
+--
+
+```{r inline-r-code-01, echo = FALSE, out.height="70%", out.width="70%", fig.align='center'}
+knitr::include_graphics("www/inline-r-code-01.png")
+```
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+### Inline R code allows us to include summaries of our analysis in the report
+
+--
+
+```{r inline-r-code-02, echo = FALSE, out.height="80%", out.width="80%", fig.align='center'}
+knitr::include_graphics("www/inline-r-code-02.png")
+```
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown Tables
+
+### We're going to add the summary statistics in `descriptives` to our `rmd-tables.Rmd` report.
+
+.leftcol[
+
+.font90[Include the following code under the `Summary` two-level header]
+
+.code60[
+
+```{r}
+descriptives
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+```
+The average age in `nhanes_11_12` is `r round(mean(nhanes_11_12$age, na.rm = TRUE), 2)`. The correlation between age and average systolic blood pressure is `r round(cor(x = nhanes_11_12$age, y = nhanes_11_12$bp_sys_ave), 2)`
+```
+
+]

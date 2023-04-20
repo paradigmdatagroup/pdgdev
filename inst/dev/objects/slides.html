@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Common Data Objects in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Martin Frigaard" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <meta name="description" content="Common Data Objects in R"/>
+    <meta name="generator" content="xaringan and remark.js"/>
+    <meta name="github-repo" content="paradigmdatagroup/objects/"/>
+    <meta name="twitter:title" content="Common Data Objects in R"/>
+    <meta name="twitter:description" content="Common Data Objects in R"/>
+    <meta name="twitter:url" content="https://github.com/paradigmdatagroup/objects/"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:creator" content="@mjfrigaard"/>
+    <meta name="twitter:site" content="@mjfrigaard"/>
+    <meta property="og:title" content="Common Data Objects in R"/>
+    <meta property="og:description" content="Common Data Objects in R"/>
+    <meta property="og:url" content="https://github.com/paradigmdatagroup/objects/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="article:author" content="Martin Frigaard"/>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+layout: true
+
+&lt;!-- this adds the link footer to all slides, depends on footer-small class in css--&gt;
+
+&lt;div class="footer-small"&gt;&lt;span&gt;https://github.com/paradigmdatagroup/objects/&lt;/div&gt;
+
+---
+name: title-slide
+class: title-slide, center, middle, inverse
+
+# Common Data Objects in R
+#.fancy[Vectors, Lists, Data Frames and Tibbles]
+
+&lt;br&gt;
+
+.large[by Martin Frigaard]
+
+Written: October 03 2022
+
+Updated: April 19 2023
+
+
+---
+background-image: url(img/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Materials 
+
+The slides are in the `slides.pdf` file
+
+--
+
+The materials for this training are in the `worksheets` folder: 
+
+```
+worksheets/
+    └── objects.Rmd
+```
+
+
+---
+background-image: url(img/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Outline 
+
+&lt;br&gt;
+
+.leftcol[
+
+#### 1. Atomic Vectors 
+
+#### 2. S3 Vectors 
+
+#### 3. Lists 
+
+]
+
+--
+
+.rightcol[
+
+#### 4. Data Frames
+
+#### 5. Tibbles 
+
+#### 6. Data Frames vs. Tibbles 
+
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: center, middle, inverse
+background-position: 96% 4%
+background-size: 6%
+
+# .large[Common Data Objects]
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+.font90[.green[Open `worksheets/objects.Rmd` to follow along]]
+
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: vector
+
+#### Vectors are the fundamental data object in R
+
+
+&lt;img src="img/atomic-vectors.png" width="85%" height="85%" style="display: block; margin: auto;" /&gt;
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: creating vectors 
+
+&lt;br&gt;
+
+`c()` is used to combine (or concatenate) a variety of elements  
+
+--
+
+`&lt;-` is referred to as the assignment operator, and it’s used with `c()` to assign elements to a designated object
+
+--
+
+.leftcol[
+
+Create logical and integer vectors (`log_vec` and `int_vec`)
+
+
+```r
+log_vec &lt;- c(TRUE, FALSE)
+int_vec &lt;- c(4L, 7L)
+```
+
+
+]
+
+.rightcol[
+
+Create double and character vectors (`dbl_vec` and `chr_vec`)
+
+
+```r
+dbl_vec &lt;- c(2.2, 8.09)
+chr_vec &lt;- c("A", "D")
+```
+
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: atomic vectors
+
+.cols3[
+
+.font80[Print Atomic Vectors]
+
+.code60[
+
+
+```r
+log_vec
+```
+
+```
+  [1]  TRUE FALSE
+```
+
+```r
+int_vec
+```
+
+```
+  [1] 4 7
+```
+
+```r
+dbl_vec
+```
+
+```
+  [1] 2.20 8.09
+```
+
+```r
+chr_vec
+```
+
+```
+  [1] "A" "D"
+```
+
+
+]
+
+]
+
+--
+
+
+.cols3[
+
+.font80[Check with `typeof()`]
+
+.code60[
+
+
+```r
+typeof(log_vec)
+```
+
+```
+  [1] "logical"
+```
+
+```r
+typeof(int_vec)
+```
+
+```
+  [1] "integer"
+```
+
+```r
+typeof(dbl_vec)
+```
+
+```
+  [1] "double"
+```
+
+```r
+typeof(chr_vec)
+```
+
+```
+  [1] "character"
+```
+
+]
+
+]
+
+--
+
+.cols3[
+
+.font80[Check `class()`]
+
+.code60[
+
+
+```r
+class(log_vec)
+```
+
+```
+  [1] "logical"
+```
+
+```r
+class(int_vec)
+```
+
+```
+  [1] "integer"
+```
+
+```r
+*class(dbl_vec)
+```
+
+```
+  [1] "numeric"
+```
+
+```r
+class(chr_vec)
+```
+
+```
+  [1] "character"
+```
+
+
+]
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: S3 vectors
+
+&lt;img src="img/s3-vectors.png" width="85%" height="85%" style="display: block; margin: auto;" /&gt;
+
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: S3 vectors
+
+
+.leftcol[
+
+.font80[Create S3 Vectors]
+
+.code60[
+
+
+```r
+fct_vec &lt;- factor(
+        x = c("Medium", "Low", "High"), 
+        levels = c("Low", "Medium", "High"))
+date_vec &lt;- c(Sys.Date(), Sys.Date() + 1)
+dt_vec &lt;- c(Sys.time(), Sys.time() + (86400*365))
+difft_vec &lt;- difftime(
+            time1 = Sys.time(), 
+            time2 = Sys.time() + (86400*365), 
+            units = "days")
+```
+
+
+]
+
+]
+
+.rightcol[
+
+.font80[View S3 vectors]
+
+.code55[
+
+
+```r
+fct_vec
+```
+
+```
+  [1] Medium Low    High  
+  Levels: Low Medium High
+```
+
+```r
+date_vec
+```
+
+```
+  [1] "2023-04-19" "2023-04-20"
+```
+
+```r
+dt_vec
+```
+
+```
+  [1] "2023-04-19 22:24:55 PDT" "2024-04-18 22:24:55 PDT"
+```
+
+```r
+difft_vec
+```
+
+```
+  Time difference of -365 days
+```
+
+]
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: S3 vectors
+
+.leftcol[
+
+.font80[Check `typeof()`]
+
+.code60[
+
+
+```r
+typeof(fct_vec)
+```
+
+```
+  [1] "integer"
+```
+
+```r
+typeof(date_vec)
+```
+
+```
+  [1] "double"
+```
+
+```r
+typeof(dt_vec)
+```
+
+```
+  [1] "double"
+```
+
+```r
+typeof(difft_vec)
+```
+
+```
+  [1] "double"
+```
+
+]
+]
+
+.rightcol[
+
+.font80[Check `class()`]
+
+.code60[
+
+
+```r
+class(fct_vec)
+```
+
+```
+  [1] "factor"
+```
+
+```r
+class(date_vec)
+```
+
+```
+  [1] "Date"
+```
+
+```r
+class(dt_vec)
+```
+
+```
+  [1] "POSIXct" "POSIXt"
+```
+
+```r
+class(difft_vec)
+```
+
+```
+  [1] "difftime"
+```
+
+]
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: S3 vectors
+
+.font90[**S3 vectors have additional `attributes()`**]
+
+--
+
+.cols3[
+
+.font80[Factor attributes]
+
+.code60[
+
+
+```r
+attributes(fct_vec)
+```
+
+```
+  $levels
+  [1] "Low"    "Medium" "High"  
+  
+  $class
+  [1] "factor"
+```
+
+
+]
+
+]
+
+--
+
+.cols3[
+
+.font80[Date/Datetime attributes]
+
+.code60[
+
+
+```r
+attributes(date_vec)
+```
+
+```
+  $class
+  [1] "Date"
+```
+
+```r
+attributes(dt_vec)
+```
+
+```
+  $class
+  [1] "POSIXct" "POSIXt"
+```
+
+]
+]
+
+--
+
+.cols3[
+
+.font80[Difftime attributes]
+
+.code60[
+
+
+```r
+attributes(difft_vec)
+```
+
+```
+  $class
+  [1] "difftime"
+  
+  $units
+  [1] "days"
+```
+
+]
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: lists
+
+.font90[**Vectors have to be the same type, or `class`**]
+
+--
+
+.font90[**Lists can contain objects of different `class`es**]
+
+--
+
+.leftcol40[
+
+
+```r
+atomic_list &lt;- list(
+    'logical vector' = log_vec,
+    'integer vector' = int_vec,
+    'double vector' = dbl_vec,
+    'character vector' = chr_vec
+)
+```
+
+
+]
+
+--
+
+.rightcol60[
+
+
+```r
+atomic_list
+```
+
+```
+  $`logical vector`
+  [1]  TRUE FALSE
+  
+  $`integer vector`
+  [1] 4 7
+  
+  $`double vector`
+  [1] 2.20 8.09
+  
+  $`character vector`
+  [1] "A" "D"
+```
+
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: lists
+
+.font90[**Lists can even contain other lists!**]
+
+--
+
+.leftcol[
+
+.font80[Create list of date vectors]
+
+.code60[
+
+```r
+s3_list &lt;- list(
+    'date vector' = date_vec,
+    'datetime vector' = dt_vec,
+    'difftime vector' = difft_vec
+)
+```
+]
+
+.font80[Create list of lists]
+
+.code60[
+
+```r
+vector_list &lt;- list(
+    'S3 list' = s3_list,
+    'Atomic list' = atomic_list
+)
+```
+]
+
+]
+
+--
+
+.rightcol[
+
+.code50[
+
+
+```r
+vector_list
+```
+
+```
+  $`S3 list`
+  $`S3 list`$`date vector`
+  [1] "2023-04-19" "2023-04-20"
+  
+  $`S3 list`$`datetime vector`
+  [1] "2023-04-19 22:24:55 PDT" "2024-04-18 22:24:55 PDT"
+  
+  $`S3 list`$`difftime vector`
+  Time difference of -365 days
+  
+  
+  $`Atomic list`
+  $`Atomic list`$`logical vector`
+  [1]  TRUE FALSE
+  
+  $`Atomic list`$`integer vector`
+  [1] 4 7
+  
+  $`Atomic list`$`double vector`
+  [1] 2.20 8.09
+  
+  $`Atomic list`$`character vector`
+  [1] "A" "D"
+```
+
+]
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: data.frames
+
+.font120[**A `data.frame` is a rectangular list**]
+
+.leftcol30[
+
+.font80[Create `data.frame`]
+
+.code60[
+
+
+```r
+my_df &lt;- data.frame(
+    log_col = log_vec,
+    int_col = int_vec,
+    dbl_col = dbl_vec,
+    chr_col = chr_vec,
+    date_col = date_vec,
+    dt_col = dt_vec
+)
+```
+
+]
+
+]
+
+--
+
+.rightcol70[
+
+.font80[View `data.frame`]
+
+.code60[
+
+
+```r
+my_df
+```
+
+```
+    log_col int_col dbl_col chr_col   date_col              dt_col
+  1    TRUE       4    2.20       A 2023-04-19 2023-04-19 22:24:55
+  2   FALSE       7    8.09       D 2023-04-20 2024-04-18 22:24:55
+```
+
+]
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: data.frames
+
+.font90[**Check the structure of the `data.frame`**]
+
+.code60[
+
+
+```r
+str(my_df)
+```
+
+```
+  'data.frame':	2 obs. of  6 variables:
+   $ log_col : logi  TRUE FALSE
+   $ int_col : int  4 7
+   $ dbl_col : num  2.2 8.09
+   $ chr_col : chr  "A" "D"
+   $ date_col: Date, format: "2023-04-19" "2023-04-20"
+   $ dt_col  : POSIXct, format: "2023-04-19 22:24:55" "2024-04-18 22:24:55"
+```
+
+]
+
+--
+
+.font90[**Check the `class` and `typeof()` for the a `data.frame`**]
+
+.leftcol[
+
+.code60[
+
+```r
+class(my_df)
+```
+
+```
+  [1] "data.frame"
+```
+]
+
+]
+
+--
+
+.rightcol[
+
+.code60[
+
+
+```r
+typeof(my_df)
+```
+
+```
+  [1] "list"
+```
+
+]
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: tibbles
+
+.font90[**A tibble is a [modern reimagining](https://tibble.tidyverse.org/) of the `data.frame`**]
+
+--
+
+.font90[They are created just like `data.frame`s]
+
+--
+
+.leftcol30[
+
+.font80[Create `tibble`]
+
+.code60[
+
+
+```r
+my_tbl &lt;- tibble::tibble(
+    log_col = log_vec,
+    int_col = int_vec,
+    dbl_col = dbl_vec,
+    chr_col = chr_vec,
+    date_col = date_vec,
+    dt_col = dt_vec
+)
+```
+
+]
+
+]
+
+--
+
+.rightcol70[
+
+.font80[View `tibble`]
+
+.code60[
+
+
+```r
+my_tbl
+```
+
+```
+  # A tibble: 2 × 6
+    log_col int_col dbl_col chr_col date_col   dt_col             
+    &lt;lgl&gt;     &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;date&gt;     &lt;dttm&gt;             
+  1 TRUE          4    2.2  A       2023-04-19 2023-04-19 22:24:55
+  2 FALSE         7    8.09 D       2023-04-20 2024-04-18 22:24:55
+```
+
+]
+
+]
+
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Data Objects: data.frames &amp; tibbles
+
+.font90[`tibble`s print a little nicer than `data.frame`s, and we'll primarily be using them because they work well with other functions for tables and visualizations.]
+
+--
+
+.code80[
+
+
+```r
+my_df
+```
+
+```
+    log_col int_col dbl_col chr_col   date_col              dt_col
+  1    TRUE       4    2.20       A 2023-04-19 2023-04-19 22:24:55
+  2   FALSE       7    8.09       D 2023-04-20 2024-04-18 22:24:55
+```
+
+]
+
+--
+
+.code80[
+
+
+```r
+my_tbl
+```
+
+```
+  # A tibble: 2 × 6
+    log_col int_col dbl_col chr_col date_col   dt_col             
+    &lt;lgl&gt;     &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;date&gt;     &lt;dttm&gt;             
+  1 TRUE          4    2.2  A       2023-04-19 2023-04-19 22:24:55
+  2 FALSE         7    8.09 D       2023-04-20 2024-04-18 22:24:55
+```
+
+]
+
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: atomic vectors
+
+Atomic vectors are the fundamental data type in R.
+
+.leftcol30[
+
+.font80[ **Creating atomic vectors** ]
+
+.code55[
+
+```r
+c(TRUE, FALSE) # logical 
+```
+
+```
+  [1]  TRUE FALSE
+```
+
+```r
+c(4L, 7L) # integer
+```
+
+```
+  [1] 4 7
+```
+
+```r
+c(2.2, 8.09) # double 
+```
+
+```
+  [1] 2.20 8.09
+```
+
+```r
+c("A", "D") # character
+```
+
+```
+  [1] "A" "D"
+```
+]
+
+]
+
+--
+
+.center[.font80[ **Atomic vector hierarchy** ]]
+
+.rightcol70[
+
+&lt;img src="img/atomic-vectors.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: S3 vectors
+
+.font80[ **Creating S3 vectors** ]
+
+.leftcol20[
+
+]
+
+--
+
+.rightcol80[
+
+
+
+.code55[
+
+```r
+factor(x = c("Medium", "Low", "High"),
+  levels = c("Low", "Medium", "High")) # factor
+```
+
+```
+  [1] Medium Low    High  
+  Levels: Low Medium High
+```
+
+```r
+c(Sys.Date(), Sys.Date() + 1) # date
+```
+
+```
+  [1] "2023-04-19" "2023-04-20"
+```
+
+```r
+c(Sys.time(), Sys.time() + (86400 * 365)) # datetime
+```
+
+```
+  [1] "2023-04-19 22:24:55 PDT" "2024-04-18 22:24:55 PDT"
+```
+
+```r
+difftime(time1 = Sys.time(), time2 = Sys.time() + (86400 * 365),
+         units = "days") # difftime
+```
+
+```
+  Time difference of -365 days
+```
+]
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: S3 vectors
+
+.leftcol45[
+
+.code60[
+
+```
+  [1] Medium Low    High  
+  Levels: Low Medium High
+```
+]
+
+&lt;img src="img/factors.png" width="72%" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+--
+
+.rightcol55[
+
+.code60[
+
+```
+  [1] "2023-04-19"
+```
+
+```
+  [1] "2023-04-19 22:24:55 PDT"
+```
+
+```
+  Time difference of -1 days
+```
+]
+
+&lt;img src="img/dates.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: lists
+
+.font70[Lists can contain objects of different types:]
+
+.cols3[
+
+#### Lists 
+
+.code50[
+
+
+```r
+list(
+    'logical vector' = c(TRUE, FALSE),
+    'integer vector' = c(4L, 7L),
+    'double vector' = c(2.2, 8.09),
+    'character vector' = c("A", "D")
+)
+```
+
+```
+  $`logical vector`
+  [1]  TRUE FALSE
+  
+  $`integer vector`
+  [1] 4 7
+  
+  $`double vector`
+  [1] 2.20 8.09
+  
+  $`character vector`
+  [1] "A" "D"
+```
+]
+
+]
+
+--
+
+.cols3[
+
+#### Lists of lists
+
+.code40[
+
+
+```r
+list(
+  # atomic list
+  list(
+    'logical vector' = c(TRUE, FALSE),
+    'integer vector' = c(4L, 7L),
+    'double vector' = c(2.2, 8.09),
+    'character vector' = c("A", "D")),
+  # S3 list
+  list(
+    'factor vector' = factor(x = c("High", "Low"), 
+                        levels = c("Low", "High")),
+    'date vector' = c(Sys.Date()),
+    'datetime vector' = c(Sys.time()),
+    'difftime vector' = difftime(
+                          time1 = Sys.Date(), 
+                          time2 = Sys.Date() + 1, 
+                          units = "weeks"))
+)
+```
+
+]
+
+]
+
+--
+
+.cols3[
+
+.font70[Including other lists:]
+
+.code40[
+
+
+```
+  [[1]]
+  [[1]]$`logical vector`
+  [1]  TRUE FALSE
+  
+  [[1]]$`integer vector`
+  [1] 4 7
+  
+  [[1]]$`double vector`
+  [1] 2.20 8.09
+  
+  [[1]]$`character vector`
+  [1] "A" "D"
+  
+  
+  [[2]]
+  [[2]]$`factor vector`
+  [1] High Low 
+  Levels: Low High
+  
+  [[2]]$`date vector`
+  [1] "2023-04-19"
+  
+  [[2]]$`datetime vector`
+  [1] "2023-04-19 22:24:55 PDT"
+  
+  [[2]]$`difftime vector`
+  Time difference of 2 weeks
+```
+
+]
+
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: data frames &amp; tibbles 
+
+.leftcol[
+
+#### Creating data frames 
+
+.code60[
+
+
+```r
+data.frame(
+  log_var = c(TRUE, FALSE), 
+  dbl_var = c(2.2, 8.09),
+  chr_var = c("A", "D"),
+  fct_var = factor(x = c("High", "Low"), 
+                        levels = c("Low", "High")),
+  date_var = c(Sys.Date()))
+```
+
+]
+
+
+
+]
+
+--
+
+.rightcol[
+
+#### Printing data frames
+
+.code60[
+
+
+```
+    log_var dbl_var chr_var fct_var   date_var
+  1    TRUE    2.20       A    High 2023-04-19
+  2   FALSE    8.09       D     Low 2023-04-19
+```
+
+]
+
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+## Recap: tibbles
+
+.leftcol[
+
+#### Creating tibbles
+
+.code60[
+
+```r
+tibble::tibble(
+  log_var = c(TRUE, FALSE), 
+  dbl_var = c(2.2, 8.09),
+  chr_var = c("A", "D"),
+  fct_var = factor(x = c("High", "Low"), 
+                        levels = c("Low", "High")),
+  date_var = c(Sys.Date()))
+```
+]
+
+]
+
+--
+
+.rightcol[
+
+#### Printing tibbles
+
+.code60[
+
+```
+  # A tibble: 2 × 5
+    log_var dbl_var chr_var fct_var date_var  
+    &lt;lgl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;fct&gt;   &lt;date&gt;    
+  1 TRUE       2.2  A       High    2023-04-19
+  2 FALSE      8.09 D       Low     2023-04-19
+```
+]
+
+]
+
+---
+background-image: url(img/pdg-hex.png)
+class: left, top
+background-position: 96% 4%
+background-size: 6%
+
+# Learn more 
+
+&lt;br&gt;
+
+## [R for Data Science, 2nd Ed](https://r4ds.hadley.nz/) 
+
+## [Hands on Programming with R](https://rstudio-education.github.io/hopr/)
+
+## [Advanced R, 2nd Ed](https://adv-r.hadley.nz/)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

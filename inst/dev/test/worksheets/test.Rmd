@@ -1,0 +1,19 @@
+---
+#############################################################
+#                                                           #
+#   Click on "Knit" in RStudio to render this worksheet.    #
+#                                                           #
+#############################################################
+title: "Test"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+options(repos = "https://cloud.r-project.org")
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE,
+                      error = TRUE)
+```

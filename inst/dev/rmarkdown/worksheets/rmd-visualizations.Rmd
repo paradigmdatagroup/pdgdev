@@ -1,0 +1,137 @@
+---
+title: "R Markdown Visualizations"
+author: ""
+date: ""
+output: html_document
+---
+
+<!--
+#############################################################
+#                                                           #
+#   Click on "Knit" in RStudio to render this worksheet.    #
+#                                                           #
+#############################################################
+-->
+
+```{r setup, include=FALSE}
+library(knitr)
+options(repos = "https://cloud.r-project.org")
+knitr::opts_chunk$set(warning = FALSE, 
+                    message = FALSE,
+                    error = TRUE,
+                    echo = TRUE,
+                    dev = "ragg_png",
+                    dpi = 320,
+                    out.width = "80%",
+                    fig.width = 6,
+                    fig.asp = 0.618,
+                    fig.retina = 2,
+                    fig.align = "center",
+                    fig.show = "hold")
+```
+
+
+# Load SmallNhanes
+
+The `NHANES` package comes with data from the [2014 American National Health and Nutrition Examination surveys](http://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf).
+
+```{r}
+SmallNhanes <- read_csv("https://bit.ly/nhanes-small") |> 
+                janitor::clean_names() |> 
+                mutate(health_gen = factor(x = health_gen, 
+                               levels = c("Poor", "Fair", 
+                                          "Good", "Vgood", 
+                                          "Excellent"), 
+                                ordered = TRUE))
+
+head(SmallNhanes)
+```
+
+## First graph 
+
+```{r}
+SmallNhanes |> 
+  ggplot(mapping = aes(x = weight, y = height)) + 
+  geom_point() 
+```
+
+## Your Turn 1 
+
+Set local vs. global aesthetic mappings
+
+```{r}
+# local 
+# mapping = aes(x = weight, y = height)
+SmallNhanes |> 
+  ggplot() + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r}
+# global 
+# mapping = aes(x = weight, y = height)
+SmallNhanes |> 
+  ggplot() + 
+  geom_point() + 
+  geom_smooth()
+```
+
+## Your Turn 2
+
+How does BMI vary across levels of self-reported general health?
+
+```{r , eval=FALSE}
+SmallNhanes |>  
+  ggplot() |> 
+  geom_boxplot(mapping = aes(x = __________, y = ___))
+
+```
+
+## Your Turn 3
+
+Fill in the code below to change the colors in the boxplot for each level of `health_gen`
+
+```{r eval=FALSE}
+SmallNhanes |> 
+  ggplot() +
+  geom_boxplot(
+    aes(x = health_gen, y = bmi, _____ = health_gen))
+
+```
+
+## Layers
+
+Combine the layers 
+
+```{r}
+SmallNhanes |>  
+  ggplot(aes(x = weight, y = height)) + 
+  geom_point(aes(color = gender))
+```
+
+
+```{r}
+filter(SmallNhanes, gender == "male") |> 
+  ggplot() + 
+  geom_smooth(aes(x = weight, y = height), 
+              color = "blue")
+```
+
+
+```{r}
+filter(SmallNhanes, gender == "female") |> 
+  ggplot() + 
+  geom_smooth(aes(x = weight, y = height), 
+              color = "red")
+```
+
+## Facets
+
+```{r}
+SmallNhanes |> 
+  ggplot(aes(x = weight, y = height)) + 
+  geom_point(aes(color = gender)) + 
+  facet_wrap(race1 ~ gender)
+```
+

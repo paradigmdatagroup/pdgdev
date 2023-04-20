@@ -1,0 +1,2935 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to iteration</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Martin Frigaard" />
+    <meta name="date" content="2023-04-19" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <meta name="description" content="Introduction to iteration"/>
+    <meta name="generator" content="xaringan and remark.js"/>
+    <meta name="github-repo" content="paradigmdatagroup/iteration/"/>
+    <meta name="twitter:title" content="Common Data Objects in R"/>
+    <meta name="twitter:description" content="Introduction to iteration"/>
+    <meta name="twitter:url" content="https://github.com/paradigmdatagroup/iteration/"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:creator" content="@mjfrigaard"/>
+    <meta name="twitter:site" content="@mjfrigaard"/>
+    <meta property="og:title" content="Common Data Objects in R"/>
+    <meta property="og:description" content="Introduction to iteration"/>
+    <meta property="og:url" content="https://github.com/paradigmdatagroup/iteration/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="article:author" content="Martin Frigaard"/>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <link href="libs/xaringanExtra-extra-styles/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+layout: true
+
+&lt;!-- this adds the link footer to all slides, depends on footer-small class in css--&gt;
+
+&lt;div class="footer-small"&gt;&lt;span&gt;https://github.com/paradigmdatagroup/iteration&lt;/span&gt;&lt;/div&gt;
+
+---
+name: title-slide
+class: title-slide, center, middle, inverse
+
+# Introduction to iteration
+#.fancy[for loops, apply, and purrr]
+
+&lt;br&gt;
+
+.large[by Martin Frigaard]
+
+Written: January 09 2022
+
+Updated: April 19 2023
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Outline
+
+.leftcol[
+
+#### When to use iteration
+
+- Iteration &amp; the DRY principle
+
+#### Base R 
+
+- `for` loops
+
+- Anonymous functions
+
+- the `apply` family
+
+]
+
+--
+
+.rightcol[
+
+#### `purrr`
+
+- A `purrr` template
+
+- `map()` variants 
+
+- Formula syntax
+
+#### Worked examples 
+
+- Dealing with multiple datasets
+
+]
+
+
+---
+class: inverse, center, middle
+background-position: 50% 50%
+
+# .font180[*What is iteration?*]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# What is iteration?
+
+&lt;br&gt;
+
+In programming, iteration refers to .font110[.red[*defining an input and applying an operation over every part.*]]
+
+--
+
+&gt; .font140["...across each of these, do this...”]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# How iteration works
+
+--
+
+### The number of 'iterations' can be based on conditions, a set number, or via the number of elements in an object. 
+
+I like to this of iteration as, 
+
+.center[
+&gt; ## "*versatile repetitive execution at scale*"
+]
+
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# When to use iteration?
+
+If the **.blue[DRY]** principle is violated:
+
+--
+
+&gt; .font140[*"Every piece of knowledge or logic should have a single, authoritative representation within a system."* - **.blue[D]**on't **.blue[R]**epeat **.blue[Y]**ourself  ([Wikipedia](https://en.wikipedia.org/wiki/Don't_repeat_yourself?oldformat=true))]
+
+--
+
+When you find yourself copying and pasting code in multiple places, consider writing a function or using iteration
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Problems to solve with iteration
+
+
+.leftcol[
+
+- **Problems involving repetition**
+
+  - Perform an operation needs on each element in a dataset
+  
+- **Problems involving conditional calculations**
+
+  - Execute a set of calculations until a specific condition is met
+
+]
+
+--
+
+.rightcol[
+
+- **Any combination of the two**
+
+- Repeat an operation (or a set of operations) a certain number of times or until a specific condition is met
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Methods for iteration in R
+
+&lt;br&gt;
+
+--
+
+
+### 1. `for` loops (base R)
+
+--
+
+### 2. `apply` family of functions (base R)
+
+
+--
+
+### 3. `purrr` (`tidyverse`)
+
+
+---
+class: inverse, center, middle
+background-position: 50% 50%
+
+# .font180[*The `for` loop*]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop structure
+
+--
+
+### `for` loops are composed in three parts:
+
+--
+
+.leftcol[
+
+#### 1. A sequence to index
+
+#### 2. Operation(s) to iterate
+
+#### 3. An object to capture the results
+
+]
+
+--
+
+.rightcol[
+
+.code65[
+
+
+```r
+# build output to capture result
+output &lt;- structure(list(words = NULL, 
+                         sentences = NULL, 
+                         letters = NULL))
+# define sequence
+for (variable x in my_list) {
+  # list operation(s) to be repeated
+  output[[x]] &lt;- function(my_list[[x]])
+}
+```
+
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop example
+
+.leftcol[
+
+Build a list 
+
+.code60[
+
+```r
+my_list &lt;- list(
+  words = c("bLOW", "FOLloW", "cOMMOn", 
+            "ORiginAL", "UsUal"),
+  sentences = c(
+    "HE TaKeS tHE oatH OF offICe EaCH mArcH.",
+    "THE OfficE pAINt waS A dUll, saD TAn.",
+    "faRMers CAmE iN TO ThREsH tHe OAT crOP."
+  ),
+  letters = c("l", "y", "d", "p", "h", 
+              "e", "v", "M", "R", "Z")
+) 
+```
+]
+
+]
+
+--
+
+.rightcol[
+
+View it's structure 
+
+.code60[
+
+```r
+my_list
+```
+
+```
+#&gt; $words
+#&gt; [1] "bLOW"     "FOLloW"   "cOMMOn"   "ORiginAL" "UsUal"   
+#&gt; 
+#&gt; $sentences
+#&gt; [1] "HE TaKeS tHE oatH OF offICe EaCH mArcH."
+#&gt; [2] "THE OfficE pAINt waS A dUll, saD TAn."  
+#&gt; [3] "faRMers CAmE iN TO ThREsH tHe OAT crOP."
+#&gt; 
+#&gt; $letters
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "M" "R" "Z"
+```
+]
+
+
+]
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop example
+
+--
+
+### Apply a function to every element of a list
+
+--
+
+*What happens when we pass `my_list` to `tolower()`?*
+
+--
+
+
+```r
+tolower(x = my_list)
+```
+
+```
+#&gt; [1] "c(\"blow\", \"follow\", \"common\", \"original\", \"usual\")"                                                                          
+#&gt; [2] "c(\"he takes the oath of office each march.\", \"the office paint was a dull, sad tan.\", \"farmers came in to thresh the oat crop.\")"
+#&gt; [3] "c(\"l\", \"y\", \"d\", \"p\", \"h\", \"e\", \"v\", \"m\", \"r\", \"z\")"
+```
+
+--
+
+*Yikes!* 
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop example
+
+*What happened?*
+
+--
+
+
+```r
+??tolower
+```
+
+&gt; *"`x` = a character vector, or an object that can be coerced to character"*
+
+--
+
+*`tolower()` was expecting `x` to be a vector*
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop example
+
+&lt;br&gt;
+
+A lot functions in R expect vectors, and a lot of vectors end up in lists...
+
+--
+
+*What we wanted:*
+
+.code65[
+
+```r
+tolower(x = my_list$words)
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"
+tolower(x = my_list$sentences)
+#&gt; [1] "he takes the oath of office each march."
+#&gt; [2] "the office paint was a dull, sad tan."  
+#&gt; [3] "farmers came in to thresh the oat crop."
+tolower(x = my_list$letters)
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+]
+
+--
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+## The `for` loop sequence
+
+#### Use `seq_along()` to define the .red[sequence] to index:
+
+--
+
+.leftcol[
+
+.code65[
+
+```r
+# This generates a full sequence for my_list
+seq_along(my_list)
+```
+
+```
+#&gt; [1] 1 2 3
+```
+
+```r
+# This returns a single value of my_list
+seq_along(my_list)[1]
+```
+
+```
+#&gt; [1] 1
+```
+]
+
+]
+
+--
+
+.rightcol[
+
+.code65[
+
+```r
+# This gets all items at index 1 in my_list
+my_list[[seq_along(my_list)[1]]]
+```
+
+```
+#&gt; [1] "bLOW"     "FOLloW"   "cOMMOn"   "ORiginAL" "UsUal"
+```
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+## The `for` loop operations 
+
+--
+
+#### The .red[operations] are the functions the `for` loop will perform per iteration
+
+--
+
+*Test this with a few values*
+
+--
+
+.code65[
+
+
+```r
+tolower(my_list[[1]])
+```
+
+```
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"
+```
+
+]
+
+--
+
+.code65[
+
+
+```r
+tolower(my_list[[3]])
+```
+
+```
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+
+]
+
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+## The `for` loop capture object 
+
+&lt;br&gt;
+
+#### Define an object to capture the results of the loop
+
+--
+
+*Make sure `output_list` is the same size as `my_list`*
+
+.code65[
+
+
+```r
+vector(mode = "list", length = 3)
+```
+
+```
+#&gt; [[1]]
+#&gt; NULL
+#&gt; 
+#&gt; [[2]]
+#&gt; NULL
+#&gt; 
+#&gt; [[3]]
+#&gt; NULL
+```
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop 
+
+--
+
+#### Finally, we put it all together:
+
+.code80[
+
+
+```r
+# define capture object
+output_list &lt;- vector(mode = "list", length = 3)
+# write sequence
+for (x in seq_along(my_list)) {        
+  # write operations/capture in object
+  output_list[[x]] &lt;- tolower(my_list[[x]])
+}
+```
+
+]
+
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop 
+
+--
+
+#### The output:
+
+
+
+.code80[
+
+```r
+output_list
+```
+
+```
+#&gt; [[1]]
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"   
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] "he takes the oath of office each march."
+#&gt; [2] "the office paint was a dull, sad tan."  
+#&gt; [3] "farmers came in to thresh the oat crop."
+#&gt; 
+#&gt; [[3]]
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+
+]
+
+
+
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `for` loop (clean up)
+
+--
+
+#### We can also clean up the output:
+
+.leftcol[
+
+Named vectors in `output_list`:
+
+.code60[
+
+```r
+# define capture object
+output_list &lt;- vector(mode = "list", length = 3)
+# write sequence
+for (x in seq_along(my_list)) {        
+  # write operations/capture in object
+  output_list[[x]] &lt;- tolower(my_list[[x]])
+  # clean up container
+  names(output_list) &lt;- c("words", "sentences", "letters")
+}
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.code60[
+
+```r
+output_list
+```
+
+```
+#&gt; $words
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"   
+#&gt; 
+#&gt; $sentences
+#&gt; [1] "he takes the oath of office each march."
+#&gt; [2] "the office paint was a dull, sad tan."  
+#&gt; [3] "farmers came in to thresh the oat crop."
+#&gt; 
+#&gt; $letters
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Recap `for` loops
+
+1) Define the sequence to index
+
+`for (` .red[x] `in seq_along(` .red[input_list] `))`
+
+--
+
+2) List the operations to iterate
+
+.red[function]`(input_list[[x]])`
+
+--
+
+3) Build an object to capture the results
+
+.red[output_list] `&lt;- vector(mode = "list", length = length(input_list))` 
+
+---
+class: inverse, center
+background-image: url(img/R_logo.png)
+background-position: 50% 70%
+background-size: 30%
+
+# Anonymous functions
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Anonymous functions
+
+- Anonymous functions are commonly used in iteration (`for` loops, `apply` functions, and `purrr`). R introduced a new shorthand anonymous function syntax in version [4.1.0](https://cran.r-project.org/doc/manuals/r-devel/NEWS.html):
+
+--
+
+.center[
+
+&gt; "*`\(x) x + 1` is parsed as `function(x) x + 1`*"
+
+]
+
+
+
+--
+
+.leftcol[
+
+Standard anonymous function:
+
+.code65[
+
+
+```r
+(function(x) tolower(x))("pIrAtES Ship")
+```
+
+```
+#&gt; [1] "pirates ship"
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+New shorthand anonymous syntax:
+
+.code65[
+
+
+```r
+(\(x) tolower(x))("pIrAtES Ship")
+```
+
+```
+#&gt; [1] "pirates ship"
+```
+
+]
+
+]
+
+---
+class: inverse, center
+background-image: url(img/R_logo.png)
+background-position: 50% 50%
+background-size: 30%
+
+# .font180[*The `apply` family*]
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# The `apply` functions
+
+--
+
+&lt;br&gt;
+
+#### The base R `*apply` family of functions (`apply()`, `lapply()`, `sapply()`, `vapply()`, etc.) remove a lot of the ‘book keeping’ code in `for` loops
+
+--
+
+.leftcol35[
+
+We'll focus on `lapply()` and `sapply()`
+
+]
+
+--
+
+.rightcol65[
+
+.code70[
+
+```r
+lapply(X, FUN, ...)
+
+sapply(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE)
+```
+]
+
+]
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `lapply()` for lists
+
+`lapply()` (pronounced ‘l-apply’) works with lists and has only two required arguments:
+
+--
+
+.leftcol40[
+
+1. `X` the object we want to iterate over
+
+2. `FUN` being the function we want iterated
+
+]
+
+--
+
+.rightcol60[
+
+.code70[
+
+```r
+lapply(X = my_list, FUN = tolower)
+```
+
+```
+#&gt; $words
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"   
+#&gt; 
+#&gt; $sentences
+#&gt; [1] "he takes the oath of office each march."
+#&gt; [2] "the office paint was a dull, sad tan."  
+#&gt; [3] "farmers came in to thresh the oat crop."
+#&gt; 
+#&gt; $letters
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `sapply()`
+
+`sapply()` will attempt to `s`implify the result depending on the `X` argument:
+
+--
+
+.leftcol40[
+
+If `X` is a list containing vectors where every element has the same length (and it’s greater than 1), then `sapply()` returns a matrix:
+
+
+]
+
+--
+
+.rightcol60[
+
+.code70[
+
+```r
+str(my_list[1])
+```
+
+```
+#&gt; List of 1
+#&gt;  $ words: chr [1:5] "bLOW" "FOLloW" "cOMMOn" "ORiginAL" ...
+```
+
+```r
+sapply(X = my_list[1], FUN = tolower)
+```
+
+```
+#&gt;      words     
+#&gt; [1,] "blow"    
+#&gt; [2,] "follow"  
+#&gt; [3,] "common"  
+#&gt; [4,] "original"
+#&gt; [5,] "usual"
+```
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `sapply()`
+
+If a vector is passed to `X` where every element is length 1, then a vector is returned:
+
+--
+
+.code80[
+
+```r
+str(my_list[[1]])
+```
+
+```
+#&gt;  chr [1:5] "bLOW" "FOLloW" "cOMMOn" "ORiginAL" "UsUal"
+```
+]
+
+--
+
+.code80[
+
+```r
+sapply(X = my_list[[1]], FUN = tolower) 
+```
+
+```
+#&gt;       bLOW     FOLloW     cOMMOn   ORiginAL      UsUal 
+#&gt;     "blow"   "follow"   "common" "original"    "usual"
+```
+]
+
+*Note the names are preserved* 
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `sapply()`
+
+&lt;br&gt;
+
+Finally, if `X` is a list where elements have a length greater than 1, then `sapply()` returns a list (making it identical to `lapply()`)
+
+--
+
+
+```r
+identical(x = sapply(X = my_list, FUN = tolower), 
+          y = lapply(X = my_list, FUN = tolower))
+```
+
+```
+#&gt; [1] TRUE
+```
+
+--
+
+This is because `sapply()` is a wrapper around `lapply()`, but has `simplify` and `USE.NAMES` set to `FALSE`
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Anonymous functions with `*apply` functions
+
+If we were to write the examples above using anonymous functions, they would look like this: 
+
+.leftcol[
+
+.code65[
+
+
+```r
+identical(
+  # standard 
+  x = lapply(X = my_list, FUN = tolower),
+  # anonymous shorthand
+  y = my_list |&gt; lapply(\(x) tolower(x))
+)
+```
+
+```
+#&gt; [1] TRUE
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.code65[
+
+
+```r
+identical(
+  # standard 
+  x = sapply(X = my_list, FUN = tolower),
+  # anonymous shorthand
+  y = my_list |&gt; sapply(\(x) tolower(x))
+)
+```
+
+```
+#&gt; [1] TRUE
+```
+
+]
+
+
+]
+
+
+---
+class: left, top
+background-image: url(img/R_logo.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Recap `*apply()` functions
+
+
+#### - The `*apply()` functions are more efficient than `for` loops because we can iterate over vectors *or* lists with **less code**
+
+--
+
+#### - One downside of `*apply` functions is they don’t play well with `data.frame`s or `tibble`s 
+
+--
+
+#### - `*apply` functions also aren't very uniform. Each function has slight variations in their arguments and rules for return values
+
+
+
+---
+class: inverse, center
+background-image: url(img/purrr.png)
+background-position: 50% 70%
+background-size: 30%
+
+# The `purrr` package
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `purrr` template
+
+A great way to start using it’s functions is with the method covered in [Charlotte Wickham’s tutorial](https://posit.co/resources/videos/happy-r-users-purrr-tutorial/):
+
+--
+
+#### 1. Do it for one element
+
+--
+
+#### 2. Turn it into a recipe
+
+--
+
+#### 3. Use `purrr::map()` to do it for all elements
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `purrr` template: *do it for one element*
+
+&lt;br&gt;
+
+#### The goal with the first step is to get a minimal working example with a single element from the object you want to iterate over (with the function you want to iterate with)
+
+--
+
+.leftcol[
+
+.code65[
+
+
+```r
+# subset an element from the list
+? &lt;- my_list[[?]]
+# apply a function to extracted element
+tolower(?)
+```
+
+]
+
+]
+
+
+--
+
+.rightcol[
+
+.code65[
+
+
+```r
+my_words &lt;- my_list[['words']]
+tolower(my_words)
+```
+
+```
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"
+```
+
+]
+
+]
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `purrr` template: *turn it into a recipe*
+
+--
+
+&lt;br&gt;
+
+#### A standard `purrr` recipe defines `.x` (the object) and `.f` (the function), followed by any additional function arguments
+
+--
+
+
+```r
+.x = my_list, .f = tolower
+```
+
+--
+
+`.x` = a list or atomic vector
+
+`.f` = the function we want to apply over every element in `.x`
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## `purrr` template: *`map()` it across all elements*
+
+--
+
+#### The `.x` argument is the list or vector to iterate over, and `.f` is the function applied to every element of `.x`
+
+--
+
+.leftcol55[
+
+.code80[
+
+
+```r
+purrr::map(.x = my_list, .f = tolower)
+```
+
+
+]
+
+]
+
+--
+
+.rightcol45[
+
+.code60[
+
+
+```
+#&gt; $words
+#&gt; [1] "blow"     "follow"   "common"   "original" "usual"   
+#&gt; 
+#&gt; $sentences
+#&gt; [1] "he takes the oath of office each march."
+#&gt; [2] "the office paint was a dull, sad tan."  
+#&gt; [3] "farmers came in to thresh the oat crop."
+#&gt; 
+#&gt; $letters
+#&gt;  [1] "l" "y" "d" "p" "h" "e" "v" "m" "r" "z"
+```
+
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Anonymous functions with `purrr`
+
+#### When using `purrr::map()`, the object can be 'piped' to an anonymous function 
+
+--
+
+.leftcol[
+
+This...
+
+.code70[
+
+
+```r
+purrr::map(.x = my_list, .f = tolower)
+```
+
+]
+
+...becomes this
+
+.code70[
+
+
+```r
+my_list |&gt; purrr::map(\(x) tolower(x))
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.code65[
+
+
+```r
+# compare outputs
+identical(
+  # standard syntax
+  x = purrr::map(.x = my_list, 
+                  .f = tolower),
+  # shorthand anonymous function
+  y = my_list |&gt; 
+        purrr::map(\(x) tolower(x))
+  )
+```
+
+```
+#&gt; [1] TRUE
+```
+
+]
+
+
+]
+
+
+---
+class: inverse, center
+background-image: url(img/purrr.png)
+background-position: 50% 70%
+background-size: 30%
+
+# `map()` variants
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `map` vector functions
+
+#### For vectors, `purrr` has a set of functions for each type
+
+--
+
+We’ll be using `mixed_list`--a list with five different types of vectors--to explore the `map()` vector functions:
+
+--
+
+.code65[
+
+
+```r
+mixed_list &lt;- list(booleans = c(FALSE, TRUE, FALSE, TRUE),
+    integers = c(3L, 4L, 2L, 9L, 1L),
+    doubles = c(3.041, 2.735, 2.987, 3.044, 2.95),
+    strings = c("true", "depend", "client", "equal", "round"),
+    dates = structure(c(19453, 19413, 19363), class = "Date"))
+```
+
+]
+
+--
+
+.code65[
+
+
+```r
+mixed_list |&gt; names()
+```
+
+```
+#&gt; [1] "booleans" "integers" "doubles"  "strings"  "dates"
+```
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `map` vector functions
+
+--
+
+#### Test vectors in `mixed_list` by matching `is.&lt;type&gt;()` function
+
+--
+
+.leftcol[
+
+-   .font90[ `map_lgl()` returns a logical vector ]
+
+-   .font90[ `map_int()` returns an integer vector ]
+
+-   .font90[ `map_dbl()` returns a double vector ]
+
+]
+
+--
+
+.rightcol[
+
+.code55[
+
+```r
+mixed_list |&gt; purrr::map_lgl(\(x) is.logical(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;     TRUE    FALSE    FALSE    FALSE    FALSE
+```
+
+```r
+mixed_list |&gt; purrr::map_int(\(x) is.integer(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;        0        1        0        0        0
+```
+
+```r
+mixed_list |&gt; purrr::map_dbl(\(x) is.double(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;        0        0        1        0        1
+```
+]
+
+
+]
+
+
+--
+
+.font90[ *...note that `dates` are stored as `double` vectors*]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `map` vector functions
+
+#### Test vectors in `mixed_list` by matching `is.&lt;type&gt;()` function
+
+--
+
+`map_chr()` returns a character vector .red[with a `warning`]
+
+--
+
+
+```r
+mixed_list |&gt; purrr::map_chr(\(x) is.character(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;  "FALSE"  "FALSE"  "FALSE"   "TRUE"  "FALSE"
+```
+
+--
+
+```
+#&gt; Warning: Automatic coercion from logical to character was deprecated in purrr 1.0.0.
+#&gt; ℹ Please use an explicit call to `as.character()` within `map_chr()` instead.
+#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+```
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# `map_vec()` 
+
+The previous `purrr::map_raw()` function has been replaced with `purrr::map_vec()`, which “*simplifies to the common type of the output*”
+
+--
+
+.code65[
+
+```r
+mixed_list |&gt; purrr::map_vec(\(x) is.character(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;    FALSE    FALSE    FALSE     TRUE    FALSE
+```
+]
+
+--
+
+Note that the results are no longer characters (in `"quotes"`). The same is true when I test the dates:
+
+.code65[
+
+```r
+mixed_list |&gt; purrr::map_vec(\(x) lubridate::is.Date(x))
+```
+
+```
+#&gt; booleans integers  doubles  strings    dates 
+#&gt;    FALSE    FALSE    FALSE    FALSE     TRUE
+```
+]
+
+---
+class: inverse, center
+background-image: url(img/purrr.png)
+background-position: 50% 70%
+background-size: 30%
+
+# Worked Examples
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Iteration examples
+
+Use cases I've continuously encountered and used iteration to solve: 
+
+.leftcol[
+
+**1) Downloading multiple files** 
+
+
+
+- .font80[URLs might share a common domain, but varying paths:]
+
+
+**2) Copying/renaming multiple files** 
+
+.font80[
+
+-   Batch rename and relocate files 
+
+]
+
+
+]
+
+.rightcol[
+
+**3) Importing multiple files**
+
+.font80[
+
+-   Import a local folder of data files into RStudio
+
+]
+
+**4) Exporting multiple objects**
+
+.font80[
+
+-   Export multiple objects from RStudio into unique file paths
+
+]
+
+]
+
+.font70[
+.footnote[
+The files in these uses cases come from [Doing Data Science](https://github.com/oreillymedia/doing_data_science) by Cathy O’Neil and Rachel Schutt and are stored in [this repository.](https://github.com/oreillymedia/doing_data_science)
+]
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+&gt; "*I need to download multiple files (from separate URLS)*" - [Link to Github repo](https://github.com/paradigmdatagroup/dds-data)
+
+--
+
+&lt;img src="img/github-raw-url.png" width="1324" /&gt;
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+These files share a common domain, but have different file paths:
+
+Step 1: Create unique URLS for one week (7) .csv files
+
+- .darkblue[domain.com/].orange[path/to/file.csv]
+
+.code65[
+
+```r
+# get example URL
+nyt_url &lt;- "https://raw.githubusercontent.com/mjfrigaard/dds-data/main/nyt1.csv"
+# extract directory (i.e. common domain from URL)
+nyt_dir_url &lt;- fs::path_dir(nyt_url)
+nyt_dir_url
+```
+
+```
+#&gt; [1] "https:/raw.githubusercontent.com/mjfrigaard/dds-data/main"
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+Step 1: Create unique URLS for the subset of .csv files
+
+.code65[
+
+```r
+# create file names for 7th through 13th
+nyt_file_nms &lt;- paste0("nyt", 7:13, ".csv")
+head(nyt_file_nms, 3)
+```
+
+```
+#&gt; [1] "nyt7.csv" "nyt8.csv" "nyt9.csv"
+```
+
+```r
+# combine domain with file name
+nyt_file_urls &lt;- paste(nyt_dir_url, nyt_file_nms, sep = "/")
+head(nyt_file_urls, 3)
+```
+
+```
+#&gt; [1] "https:/raw.githubusercontent.com/mjfrigaard/dds-data/main/nyt7.csv"
+#&gt; [2] "https:/raw.githubusercontent.com/mjfrigaard/dds-data/main/nyt8.csv"
+#&gt; [3] "https:/raw.githubusercontent.com/mjfrigaard/dds-data/main/nyt9.csv"
+```
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+Step 2: Create unique local folder and file paths for the .csv files:
+
+
+```r
+nyt_local_dir &lt;- "dds-nyt"
+# create folder 
+fs::dir_create(nyt_local_dir)
+# create file paths 
+nyt_local_pths &lt;- paste(nyt_local_dir, nyt_file_nms, sep = "/")
+head(nyt_local_pths)
+```
+
+```
+#&gt; [1] "dds-nyt/nyt7.csv"  "dds-nyt/nyt8.csv"  "dds-nyt/nyt9.csv" 
+#&gt; [4] "dds-nyt/nyt10.csv" "dds-nyt/nyt11.csv" "dds-nyt/nyt12.csv"
+```
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+Step 3: Do it for one element of `nyt_file_urls` and `nyt_local_pths`:
+
+--
+
+&lt;br&gt;
+
+.code80[
+
+
+```r
+download.file(url = nyt_file_urls[1], destfile = nyt_local_pths[1])
+```
+
+]
+
+
+--
+
+```
+trying URL 'https:/raw.githubusercontent.com/mjfrigaard/dds-data/main/nyt7.csv'
+Content type 'text/plain; charset=utf-8' length 4856135 bytes (4.6 MB)
+==================================================
+downloaded 4.6 MB
+```
+
+--
+
+`download.file()` comes with a progress bar (more on that later)
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+We need a `purrr` function with the following arguments:
+
+.leftcol[
+
+1. `x` = An input vector of existing url paths 
+
+2. `y` = The output vector of destination file paths 
+
+3. Any additional arguments for `download.file()` 
+
+
+]
+
+--
+
+.rightcol[
+
+&lt;br&gt;&lt;br&gt;
+
+*For this problem, we don’t need to assign a return value to an object...we need a `purrr` function that will iterate over the items in `x` and write them to the new location in `y`*
+
+]
+
+
+
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
+#### `walk()` is ideal for problems like this:
+
+--
+
+&gt; '*`walk()` returns the input `.x` (invisibly)*' ...and... '*the return value of `.f()` is ignored*'
+
+--
+
+`invisibly` = the output from a function doesn't need to be assigned to an object
+
+--
+
+`walk2()` because we have the file URLS (`nyt_file_urls`) *and* the local file paths (`nyt_local_pths`)
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Downloading files
+
++ We will also add `.progress = TRUE` to view `purrr`s progress bar (and `quiet = TRUE` to silence the `download.file()` progress bar).
+
+--
+
+.code80[
+
+```r
+purrr::walk2(
+  .x = nyt_file_urls, .y = nyt_local_pths, # inputs
+  .f =  download.file, # function
+  .progress = TRUE, quiet = TRUE # additional arguments
+  )
+```
+
+]
+
+
+--
+
+&lt;img src="img/progress.png" width="100%" /&gt;
+
+.center[.font170[.darkgreen[.fancy[Progress bars!]]]]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 6%
+
+## Copying a directory of files
+
+&gt; "*I have a folder of files I’d like to rename or copy to a new directory*"
+
+.leftcol[
+
+I just created this: 
+
+```
+dds-nyt/
+    ├── nyt10.csv
+    ├── nyt11.csv
+    ├── nyt12.csv
+    ├── nyt13.csv
+    ├── nyt7.csv
+    ├── nyt8.csv
+    └── nyt9.csv
+```
+
+
+]
+
+--
+
+.rightcol[
+
+but I'd like this: 
+
+```
+dds-nyt
+    └── raw
+        ├── nyt10.csv
+        ├── nyt11.csv
+        ├── nyt12.csv
+        ├── nyt13.csv
+        ├── nyt7.csv
+        ├── nyt8.csv
+        └── nyt9.csv
+```
+
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 6%
+
+## Copying a directory of files
+
+#### Create the new file paths
+
+
+
+1) Store current file paths in vector 
+
+.code60[
+
+```r
+# get file paths
+file_pths &lt;- list.files("dds-nyt", full.names = TRUE, pattern = ".csv$")
+```
+]
+
+--
+
+2) Do it for one (*replace the current path with desired folder*)
+
+.code60[
+
+```r
+# do it for one
+gsub(pattern = "^dds-nyt", replacement = "dds-nyt/raw", x = file_pths[1])
+```
+
+```
+#&gt; [1] "dds-nyt/raw/nyt10.csv"
+```
+]
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Copying a directory of files
+
+#### Create the new file paths
+
+.leftcol35[
+
+3) Write recipe 
+
+.code65[
+
+```r
+# input
+.x = file_pths, 
+# function
+.f = gsub,
+# args 
+pattern = "^dds-nyt",
+replacement = "dds-nyt/raw"
+```
+]
+
+]
+
+.rightcol65[
+
+`map_chr()` can apply `gsub()` across all `file_pths`
+
+.code65[
+
+
+```r
+raw_file_pths &lt;-  purrr::map_chr(
+                      .x = file_pths, 
+                      .f = gsub,
+                      pattern = "^dds-nyt",
+                      replacement = "dds-nyt/raw")
+head(raw_file_pths, 2)
+```
+
+```
+#&gt; [1] "dds-nyt/raw/nyt10.csv" "dds-nyt/raw/nyt11.csv"
+```
+
+]
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Copying a directory of files
+
+Now we're ready to copy the files 
+
+.leftcol[
+
+**1) Do it for one**
+
+.code65[
+
+```r
+fs::dir_create("dds-nyt/raw")
+# do it for one
+fs::file_copy(
+  path = file_pths[1], 
+  new_path = raw_file_pths[1], 
+  overwrite = TRUE)
+fs::dir_tree("dds-nyt/raw", type = "any")
+```
+
+```
+#&gt; dds-nyt/raw
+#&gt; └── nyt10.csv
+```
+
+]
+]
+
+
+.rightcol[
+
+**2) Write a recipe**
+
+.code65[
+
+```r
+# inputs 
+.x = file_pths, .y = raw_file_pths, 
+# function and args
+.f = fs::file_copy, overwrite = TRUE
+```
+
+]
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Copying a directory of files
+
+
+#### `walk2()` it out!
+
+.code75[
+
+```r
+purrr::walk2(.x = file_pths, .y = raw_file_pths, 
+      .f = fs::file_copy, 
+      .progress = TRUE, overwrite = TRUE
+  )
+fs::dir_tree("dds-nyt/raw", type = "any")
+```
+
+```
+#&gt; dds-nyt/raw
+#&gt; ├── nyt10.csv
+#&gt; ├── nyt11.csv
+#&gt; ├── nyt12.csv
+#&gt; ├── nyt13.csv
+#&gt; ├── nyt7.csv
+#&gt; ├── nyt8.csv
+#&gt; └── nyt9.csv
+```
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Copying a directory of files
+
+#### What about the previous files in the parent `dds-nyt/` folder?
+
+Supply the output from `list.files()` directly to `walk()` and include a pattern to matches `.csv` files
+
+.cols3[
+.code65[
+
+
+```
+#&gt; dds-nyt/
+#&gt; ├── nyt10.csv
+#&gt; ├── nyt11.csv
+#&gt; ├── nyt12.csv
+#&gt; ├── nyt13.csv
+#&gt; ├── nyt7.csv
+#&gt; ├── nyt8.csv
+#&gt; ├── nyt9.csv
+#&gt; └── raw
+```
+
+]
+]
+
+.cols3[
+.code65[
+
+```r
+purrr::walk(
+    # list CURRENT files 
+    .x = list.files(
+      path = "dds-nyt",
+      pattern = ".csv$",
+      full.names = TRUE),
+    # map function
+    .f = fs::file_delete)
+```
+]
+]
+
+
+
+.cols3[
+.code65[
+
+```
+#&gt; dds-nyt/
+#&gt; └── raw
+#&gt;     ├── nyt10.csv
+#&gt;     ├── nyt11.csv
+#&gt;     ├── nyt12.csv
+#&gt;     ├── nyt13.csv
+#&gt;     ├── nyt7.csv
+#&gt;     ├── nyt8.csv
+#&gt;     └── nyt9.csv
+```
+
+]
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Import multiple datasets
+
+&gt; "*You’d like to import and combine several data files into a single dataset*"
+
+.leftcol[
+
+#### Do it for one
+
+.code60[
+
+```r
+nyt1 &lt;- vroom::vroom(
+  file = raw_file_pths[1], 
+  delim = ",", 
+  show_col_types = FALSE)
+```
+
+]
+
+]
+
+.rightcol[
+
+.code60[
+
+```r
+head(nyt1)
+```
+
+```
+#&gt; # A tibble: 6 × 5
+#&gt;     Age Gender Impressions Clicks Signed_In
+#&gt;   &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+#&gt; 1    59      1           4      0         1
+#&gt; 2     0      0           7      1         0
+#&gt; 3    19      0           5      0         1
+#&gt; 4    44      1           5      0         1
+#&gt; 5    30      1           4      0         1
+#&gt; 6    33      1           3      0         1
+```
+
+]
+
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: add wrangle function
+
+Add hypothetical wrangling steps to make this example more realistic
+
+.code47[
+
+```r
+nyt_data_processing &lt;- function(nyt_csv) {
+  orig_nms &lt;- c("Age", "Gender", "Impressions", "Clicks", "Signed_In")
+  nyt_nms &lt;- names(nyt_csv)
+  if (isFALSE(identical(x = orig_nms, y = nyt_nms))) {
+    cli::cli_abort("these data don't have the correct columns!")
+  } else {
+    nyt_proc &lt;- nyt_csv |&gt; dplyr::mutate(age_group = dplyr::case_when( 
+            # create age_group variable
+              Age &lt; 18 ~ "&lt;18", Age &gt;= 18 &amp; Age &lt; 30 ~ "18-30", Age &gt;= 30 &amp; Age &lt; 45 ~ "30-44", 
+              Age &gt;= 45 &amp; Age &lt; 65 ~ "45-65", Age &gt;= 65 ~ "65+"), 
+          # factor age_group (ordered)
+          age_group = factor(age_group, levels = c("&lt;18", "18-30", "30-44", "45-65", "65+"), ordered = TRUE),
+          # create CTR variable
+          ctr_rate = round(x = Clicks/Impressions, digits = 3),
+          # create new Female variable
+          female = dplyr::case_when(Gender == 0 ~ "yes", Gender == 1 ~ "no", TRUE ~ NA_character_),
+          # factor female (un-ordered)
+          female = factor(female, levels = c("no", "yes")),
+          Signed_In = dplyr::case_when(Signed_In == 0 ~ "no", Signed_In == 1 ~ "yes", TRUE ~ NA_character_),
+          # factor Signed_In (un-ordered) &amp; format columns
+          Signed_In = factor(Signed_In, levels = c("no", "yes"))) |&gt; janitor::clean_names() 
+  }
+  return(nyt_proc)
+}
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: set names
+
+Get vector of raw data paths and set names (`purrr::set_names()`)
+
+.code70[
+
+
+```r
+raw_data_pths &lt;- purrr::set_names(x = list.files(path = "dds-nyt/raw", 
+                                                 pattern = ".csv$", 
+                                                 full.names = TRUE))
+raw_data_pths |&gt; head(2) 
+```
+
+```
+#&gt;   dds-nyt/raw/nyt10.csv   dds-nyt/raw/nyt11.csv 
+#&gt; "dds-nyt/raw/nyt10.csv" "dds-nyt/raw/nyt11.csv"
+```
+
+]
+
+--
+
+Setting names on the `raw_data_pths` vector will carry through to the imported list. 
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: import data
+
+Add import function with `purrr::map()`
+
+.code70[
+
+```r
+# import 
+purrr::map(
+  .x = raw_data_pths, .f = vroom::vroom, delim = ",", show_col_types = FALSE) |&gt; 
+  # preview
+  head(1) |&gt; dplyr::glimpse()
+```
+]
+
+Use `dplyr::glimpse()` to view the imported dataset in the list
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: import data (preview)
+
+`dplyr::glimpse()` shows us the original column names have been imported:
+
+.code65[
+
+```
+#&gt; List of 1
+#&gt;  $ dds-nyt/raw/nyt10.csv: spc_tbl_ [452,766 × 5] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+#&gt;   ..$ Age        : num [1:452766] 59 0 19 44 30 33 41 41 0 23 ...
+#&gt;   ..$ Gender     : num [1:452766] 1 0 0 1 1 1 0 0 0 1 ...
+#&gt;   ..$ Impressions: num [1:452766] 4 7 5 5 4 3 1 3 9 1 ...
+#&gt;   ..$ Clicks     : num [1:452766] 0 1 0 0 0 0 0 0 1 0 ...
+#&gt;   ..$ Signed_In  : num [1:452766] 1 0 1 1 1 1 1 1 0 1 ...
+#&gt;   ..- attr(*, "spec")=
+#&gt;   .. .. cols(
+#&gt;   .. ..   Age = col_double(),
+#&gt;   .. ..   Gender = col_double(),
+#&gt;   .. ..   Impressions = col_double(),
+#&gt;   .. ..   Clicks = col_double(),
+#&gt;   .. ..   Signed_In = col_double(),
+#&gt;   .. ..   .delim = ","
+#&gt;   .. .. )
+#&gt;   ..- attr(*, "problems")=&lt;externalptr&gt;
+```
+]
+
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: wrangle
+
+Add wrangling function with `purrr::map()`
+
+.code70[
+
+```r
+# import 
+purrr::map(
+  .x = raw_data_pths, .f = vroom::vroom, delim = ",", show_col_types = FALSE) |&gt; 
+  # wrangle 
+  purrr::map(.f = nyt_data_processing) |&gt; 
+  # preview
+  head(1) |&gt; dplyr::glimpse()
+```
+]
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: wrangle (preview)
+
+We can see the variables have been wrangled by the `nyt_data_processing()` function.
+
+.code50[
+
+```
+#&gt; List of 1
+#&gt;  $ dds-nyt/raw/nyt10.csv: spc_tbl_ [452,766 × 8] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+#&gt;   ..$ age        : num [1:452766] 59 0 19 44 30 33 41 41 0 23 ...
+#&gt;   ..$ gender     : num [1:452766] 1 0 0 1 1 1 0 0 0 1 ...
+#&gt;   ..$ impressions: num [1:452766] 4 7 5 5 4 3 1 3 9 1 ...
+#&gt;   ..$ clicks     : num [1:452766] 0 1 0 0 0 0 0 0 1 0 ...
+#&gt;   ..$ signed_in  : Factor w/ 2 levels "no","yes": 2 1 2 2 2 2 2 2 1 2 ...
+#&gt;   ..$ age_group  : Ord.factor w/ 5 levels "&lt;18"&lt;"18-30"&lt;..: 4 1 2 3 3 3 3 3 1 2 ...
+#&gt;   ..$ ctr_rate   : num [1:452766] 0 0.143 0 0 0 0 0 0 0.111 0 ...
+#&gt;   ..$ female     : Factor w/ 2 levels "no","yes": 1 2 2 1 1 1 2 2 2 1 ...
+#&gt;   ..- attr(*, "spec")=
+#&gt;   .. .. cols(
+#&gt;   .. ..   Age = col_double(),
+#&gt;   .. ..   Gender = col_double(),
+#&gt;   .. ..   Impressions = col_double(),
+#&gt;   .. ..   Clicks = col_double(),
+#&gt;   .. ..   Signed_In = col_double(),
+#&gt;   .. ..   .delim = ","
+#&gt;   .. .. )
+#&gt;   ..- attr(*, "problems")=&lt;externalptr&gt;
+```
+]
+
+ 
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: bind
+
+For the final step, I’ll bind all the data into a data.frame with the updated `purrr::list_rbind()` function (set `names_to = "id"`).
+
+.code70[
+
+```r
+# import 
+purrr::map(
+  .x = raw_data_pths, .f = vroom::vroom, delim = ",", show_col_types = FALSE) |&gt; 
+  # wrangle 
+  purrr::map(.f = nyt_data_processing) |&gt; 
+  # bind
+  purrr::list_rbind(names_to = "id") |&gt; 
+  # preview
+  dplyr::glimpse()
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: bind (preview)
+
+We can see the datasets from `dds-nyt/raw/` have been imported and processed. 
+
+.code65[
+
+```
+#&gt; Rows: 3,488,345
+#&gt; Columns: 9
+#&gt; $ id          &lt;chr&gt; "dds-nyt/raw/nyt10.csv", "dds-nyt/raw/nyt10.csv", "d…
+#&gt; $ age         &lt;dbl&gt; 59, 0, 19, 44, 30, 33, 41, 41, 0, 23, 28, 34, 0, 17,…
+#&gt; $ gender      &lt;dbl&gt; 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0…
+#&gt; $ impressions &lt;dbl&gt; 4, 7, 5, 5, 4, 3, 1, 3, 9, 1, 4, 4, 7, 3, 7, 6, 6, 2…
+#&gt; $ clicks      &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+#&gt; $ signed_in   &lt;fct&gt; yes, no, yes, yes, yes, yes, yes, yes, no, yes, yes,…
+#&gt; $ age_group   &lt;ord&gt; 45-65, &lt;18, 18-30, 30-44, 30-44, 30-44, 30-44, 30-44…
+#&gt; $ ctr_rate    &lt;dbl&gt; 0.000, 0.143, 0.000, 0.000, 0.000, 0.000, 0.000, 0.0…
+#&gt; $ female      &lt;fct&gt; no, yes, yes, no, no, no, yes, yes, yes, no, no, no,…
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Import multiple datasets: assign
+
+Assign the imported/wrangled data to `nyt_data_proc`
+
+.leftcol55[
+
+.code65[
+
+```r
+# store 
+nyt_data_proc &lt;- purrr::map(
+    # import 
+    .x = raw_data_pths, 
+    .f = vroom::vroom, 
+    delim = ",", 
+    show_col_types = FALSE) |&gt; 
+    # wrangle 
+  purrr::map(
+    .f = nyt_data_processing) |&gt; 
+    # bind
+  purrr::list_rbind(names_to = "id")
+```
+]
+
+`id` contains the name of the original file. 
+
+]
+
+--
+
+.rightcol45[
+
+.code65[
+
+```r
+nyt_data_proc |&gt; dplyr::count(id)
+```
+
+```
+#&gt; # A tibble: 7 × 2
+#&gt;   id                         n
+#&gt;   &lt;chr&gt;                  &lt;int&gt;
+#&gt; 1 dds-nyt/raw/nyt10.csv 452766
+#&gt; 2 dds-nyt/raw/nyt11.csv 478066
+#&gt; 3 dds-nyt/raw/nyt12.csv 396308
+#&gt; 4 dds-nyt/raw/nyt13.csv 786044
+#&gt; 5 dds-nyt/raw/nyt7.csv  452493
+#&gt; 6 dds-nyt/raw/nyt8.csv  463196
+#&gt; 7 dds-nyt/raw/nyt9.csv  459472
+```
+]
+
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+## Export multiple datasets
+
+&gt; *"You’d like to split your data on a categorical variable into individual datasets, then export these into separate file paths"*
+
+--
+
+Now that we've imported and wrangled the data, we want to export these to a different location (i.e., `dds-nyt/processed/`) and not back in `dds-nyt/raw/`.
+
+--
+
+Creating a vector of processed data file paths is a little more involved because I wanted to add a date prefix to the exported files, and because I want to add this path as *a variable in the `nyt_data_proc` dataset*.
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: add processed file names 
+
+Below I create `file_nm` and `proc_file_pth`
+
+.code65[
+
+```r
+# create file names 
+nyt_data_proc &lt;- dplyr::mutate(.data = nyt_data_proc,
+        file_nm = tools::file_path_sans_ext(base::basename(id)),
+        proc_file_pth = paste0("dds-nyt/processed/", as.character(Sys.Date()), "-", file_nm))
+nyt_data_proc |&gt; dplyr::count(proc_file_pth)
+```
+]
+
+.code60[
+
+```
+#&gt; # A tibble: 7 × 2
+#&gt;   proc_file_pth                           n
+#&gt;   &lt;chr&gt;                               &lt;int&gt;
+#&gt; 1 dds-nyt/processed/2023-04-19-nyt10 452766
+#&gt; 2 dds-nyt/processed/2023-04-19-nyt11 478066
+#&gt; 3 dds-nyt/processed/2023-04-19-nyt12 396308
+#&gt; 4 dds-nyt/processed/2023-04-19-nyt13 786044
+#&gt; 5 dds-nyt/processed/2023-04-19-nyt7  452493
+#&gt; 6 dds-nyt/processed/2023-04-19-nyt8  463196
+#&gt; 7 dds-nyt/processed/2023-04-19-nyt9  459472
+```
+]
+
+--
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: method 1
+
+Note that I don’t include the file extension in `proc_file_pth` (*because I might want to use different file types when I’m exporting*).
+
+--
+
+In this first method, I’ll use the `base::split()` function to split `nyt_data_proc` by the `proc_file_pth` variable into a list of data frames. I’ll also use `utils::head()`, `purrr::walk()`, and `dplyr::glimpse()` to view the output.
+
+--
+
+
+
+```r
+split(x = nyt_data_proc, f = nyt_data_proc$proc_file_pth) |&gt;
+  utils::head(2) |&gt; 
+  purrr::walk(.f = dplyr::glimpse)
+```
+
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: method 1 (preview)
+
+.code50[
+
+```
+#&gt; Rows: 452,766
+#&gt; Columns: 11
+#&gt; $ id            &lt;chr&gt; "dds-nyt/raw/nyt10.csv", "dds-nyt/raw/nyt10.csv", "dds-n…
+#&gt; $ age           &lt;dbl&gt; 59, 0, 19, 44, 30, 33, 41, 41, 0, 23, 28, 34, 0, 17, 33,…
+#&gt; $ gender        &lt;dbl&gt; 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0,…
+#&gt; $ impressions   &lt;dbl&gt; 4, 7, 5, 5, 4, 3, 1, 3, 9, 1, 4, 4, 7, 3, 7, 6, 6, 2, 7,…
+#&gt; $ clicks        &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+#&gt; $ signed_in     &lt;fct&gt; yes, no, yes, yes, yes, yes, yes, yes, no, yes, yes, yes…
+#&gt; $ age_group     &lt;ord&gt; 45-65, &lt;18, 18-30, 30-44, 30-44, 30-44, 30-44, 30-44, &lt;1…
+#&gt; $ ctr_rate      &lt;dbl&gt; 0.000, 0.143, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, …
+#&gt; $ female        &lt;fct&gt; no, yes, yes, no, no, no, yes, yes, yes, no, no, no, yes…
+#&gt; $ file_nm       &lt;chr&gt; "nyt10", "nyt10", "nyt10", "nyt10", "nyt10", "nyt10", "n…
+#&gt; $ proc_file_pth &lt;chr&gt; "dds-nyt/processed/2023-04-19-nyt10", "dds-nyt/processed…
+#&gt; Rows: 478,066
+#&gt; Columns: 11
+#&gt; $ id            &lt;chr&gt; "dds-nyt/raw/nyt11.csv", "dds-nyt/raw/nyt11.csv", "dds-n…
+#&gt; $ age           &lt;dbl&gt; 28, 51, 29, 20, 19, 0, 58, 42, 35, 44, 62, 20, 0, 0, 43,…
+#&gt; $ gender        &lt;dbl&gt; 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+#&gt; $ impressions   &lt;dbl&gt; 8, 5, 2, 4, 5, 3, 5, 6, 8, 4, 6, 4, 5, 4, 4, 5, 3, 2, 5,…
+#&gt; $ clicks        &lt;dbl&gt; 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,…
+#&gt; $ signed_in     &lt;fct&gt; yes, yes, yes, yes, yes, no, yes, yes, yes, yes, yes, ye…
+#&gt; $ age_group     &lt;ord&gt; 18-30, 45-65, 18-30, 18-30, 18-30, &lt;18, 45-65, 30-44, 30…
+#&gt; $ ctr_rate      &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 0.000, 0.333, 0.200, 0.000, …
+#&gt; $ female        &lt;fct&gt; no, yes, no, no, yes, yes, yes, yes, no, yes, yes, yes, …
+#&gt; $ file_nm       &lt;chr&gt; "nyt11", "nyt11", "nyt11", "nyt11", "nyt11", "nyt11", "n…
+#&gt; $ proc_file_pth &lt;chr&gt; "dds-nyt/processed/2023-04-19-nyt11", "dds-nyt/processed…
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: method 1 (prep)
+
+Pass list to `purrr::walk2()` and iterate `vroom::vroom_write()` over processed data paths (`proc_file_pth`)
+
+--
+
+.leftcol[
+
+.font80[ 1) create processed data folder ]
+
+.code65[
+
+
+```r
+fs::dir_create("dds-nyt/processed/")
+```
+
+]
+
+.font80[ 2) create the `.x`, the split list of `nyt_data_proc` by `proc_file_pth` ]
+
+.code65[
+
+
+```r
+by_proc_pths &lt;- nyt_data_proc |&gt; 
+  split(nyt_data_proc$proc_file_pth)
+```
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.font80[ 3) get unique processed data paths in `proc_file_pth` column and store as vector `.y` ]
+
+.code65[
+
+
+```r
+proc_pths &lt;- paste0(unique(nyt_data_proc$proc_file_pth), ".csv")
+```
+
+]
+
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: method 1 (export)
+
+I can export the data to `proc_pths` using the standard syntax:
+
+.code65[
+
+```r
+# iterate with .f
+purrr::walk2(.x = by_proc_pths, .y = proc_pths, .f = vroom::vroom_write, delim = ",")
+```
+]
+
+--
+
+Or with pipes as an anonymous function:
+
+.code65[
+
+```r
+nyt_data_proc |&gt; 
+  split(nyt_data_proc$proc_file_pth) |&gt; 
+  purrr::walk2(.y = proc_pths, 
+    \(x, y)
+    vroom::vroom_write(x = x, 
+      file = y,  delim = ","))
+```
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: verify
+
+
+```r
+fs::dir_tree("dds-nyt/", pattern = "csv$")
+```
+
+```
+#&gt; dds-nyt/
+#&gt; ├── processed
+#&gt; │   ├── 2023-04-19-nyt10.csv
+#&gt; │   ├── 2023-04-19-nyt11.csv
+#&gt; │   ├── 2023-04-19-nyt12.csv
+#&gt; │   ├── 2023-04-19-nyt13.csv
+#&gt; │   ├── 2023-04-19-nyt7.csv
+#&gt; │   ├── 2023-04-19-nyt8.csv
+#&gt; │   └── 2023-04-19-nyt9.csv
+#&gt; └── raw
+#&gt;     ├── nyt10.csv
+#&gt;     ├── nyt11.csv
+#&gt;     ├── nyt12.csv
+#&gt;     ├── nyt13.csv
+#&gt;     ├── nyt7.csv
+#&gt;     ├── nyt8.csv
+#&gt;     └── nyt9.csv
+```
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+### Export multiple datasets: option 2
+
+Another option involves the `group_walk()` function from `dplyr` (**WARNING**: this is experimental).
+
+.code65[
+
+```r
+nyt_data_proc |&gt; 
+  dplyr::group_by(proc_file_pth) |&gt;   
+  dplyr::group_walk( ~vroom::vroom_write(x = .x, 
+                          file = paste0(.y$proc_file_pth, ".csv"),
+                          delim = ","))
+```
+]
+
+--
+
+Re-written as an anonymous function, this would look like:
+
+.code65[
+
+```r
+nyt_data_proc |&gt; 
+  dplyr::group_by(proc_file_pth) |&gt;   
+  dplyr::group_walk(\(x, y) 
+    vroom::vroom_write(
+    x = x, file = paste0(y$proc_file_pth, ".csv"), delim = ", "))
+```
+]
+
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Recap 
+
+.leftcol[
+
+- Iteration
+  - What is iteration &amp; what kinds of problems it can solve
+
+- Base R 
+  - The structure of `for` loops &amp; the `apply` family
+      - New shorthand anonymous function syntax
+
+]
+
+--
+
+.rightcol[
+
+- `purrr`
+  - Creating a `purrr` template
+  - `map()` variants (`map_vec()`)
+
+- Worked examples 
+  - Dealing with multiple datasets
+      - Downloading 
+      - Copying 
+      - Importing 
+      - Exporting 
+
+]
+
+---
+class: left, top
+background-image: url(img/purrr.png)
+background-position: 90% 7%
+background-size: 7%
+
+# Read more
+
+&lt;br&gt; 
+
+- [`purrr` package website](https://purrr.tidyverse.org/) 
+
+- [Iteration chapter in R for data science](https://r4ds.hadley.nz/iteration.html) 
+
+- [`purrr` version 1.0 blog post](https://www.tidyverse.org/blog/2022/12/purrr-1-0-0/) and [video from Posit](https://www.youtube.com/watch?v=EGAs7zuRutY) 
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

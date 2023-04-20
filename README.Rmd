@@ -1,0 +1,67 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+library(pdgdev)
+remove_prod_dir("test")
+```
+
+# pdgdev
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `pdgdev` is to provide a set of tools for developing materials for PDG slides and materials. 
+
+## Installation
+
+This is a private repo, so only users can access. 
+
+
+## Build development materials
+
+Build production folder `foo`
+
+```{r example}
+library(pdgdev)
+build_dev("foo")
+```
+
+Remove `foo` folder from development:
+
+```{r}
+remove_dev_dir("foo")
+```
+
+```{r}
+fs::dir_tree("inst/dev/", recurse = FALSE)
+```
+
+## Copy development materials to production
+
+After creating materials in `inst/dev/`, copy them into `inst/prod/` with `build_prod()`
+
+```{r}
+build_prod("test")
+```
+
+Remove `test` folder from production:
+
+```{r}
+remove_prod_dir("test")
+```
+
+```{r}
+fs::dir_tree("inst/prod/", recurse = FALSE)
+```
+
+

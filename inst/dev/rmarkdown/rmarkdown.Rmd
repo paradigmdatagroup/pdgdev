@@ -1,0 +1,1220 @@
+---
+title: "R Markdown"
+subtitle: "Dynamic documents, presentations, and reports from R"
+author: "Martin Frigaard"
+institute: "Paradigm Data Group"
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - css/lexis.css
+      - css/lexis-fonts.css
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r meta, echo=FALSE}
+library(metathis)
+meta() |>
+  meta_general(
+    description = "R Markdown",
+    generator = "xaringan and remark.js"
+  ) |>
+  meta_name("github-repo" = "mjfrigaard/pdg/") |>
+  meta_social(
+    title = "Introduction to R Markdown",
+    url = "https://github.com/paradigmdatagroup/pdg/",
+    og_type = "website",
+    og_author = "Martin Frigaard",
+    twitter_card_type = "summary",
+    twitter_creator = "@mjfrigaard"
+  )
+```
+
+```{r setup, include=FALSE}
+dateWritten <- format(as.Date('2022-10-03'), format = "%B %d %Y")
+today <- format(Sys.Date(), format = "%B %d %Y")
+library(knitr)
+library(rmarkdown)
+library(fontawesome)
+library(gtsummary)
+options(
+    htmltools.dir.version = FALSE,
+    knitr.table.format = "html",
+    knitr.kable.NA = ''
+)
+knitr::opts_chunk$set(
+    warning = FALSE,
+    message = FALSE,
+    fig.path = "www/",
+    fig.width = 7.252,
+    fig.height = 4,
+    comment = " ",
+    fig.retina = 3 # Better figure resolution
+)
+# Enables the ability to show all slides in a tile overview by pressing "o"
+xaringanExtra::use_tile_view()
+xaringanExtra::use_panelset()
+xaringanExtra::use_clipboard()
+xaringanExtra::use_share_again()
+xaringanExtra::style_share_again(share_buttons = "all")
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = FALSE
+)
+```
+
+layout: true
+
+<!-- this adds the link footer to all slides, depends on footer-small class in css-->
+
+<div class="footer-small"><span>https://github.com/paradigmdatagroup/pdg/</div>
+
+---
+name: title-slide
+class: title-slide, center, middle, inverse
+
+# `r rmarkdown::metadata$title`
+#.fancy[`r rmarkdown::metadata$subtitle`]
+
+<br>
+
+.large[by Martin Frigaard]
+
+Written: `r dateWritten`
+
+Updated: `r today`
+
+.footer-large[.right[.fira[
+<br><br><br><br><br>[Created using the "λέξις" theme](https://jhelvy.github.io/lexis/index.html#what-does-%CE%BB%CE%AD%CE%BE%CE%B9%CF%82-mean)
+]]]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Materials 
+
+The slides are in the `slides.pdf` file
+
+--
+
+The materials for this training are in the `worksheets` folder: 
+
+```
+worksheets
+├── import.Rmd
+├── export.Rmd
+├── objects.Rmd
+├── rmd-basic.Rmd
+├── rmd-tables.Rmd
+└── rmd-visualizations.Rmd
+```
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# Outline 
+
+<br>
+
+.leftcol[
+
+#### 1. Importing data
+
+#### 2. Common Data Objects 
+
+#### 3. .red[R Markdown]
+
+]
+
+--
+
+.rightcol[
+
+#### 4. R Markdown Data Visualizations
+
+#### 5. R Markdown Tables
+
+#### 6. Exporting Data 
+
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+class: center, middle, inverse
+background-position: 96% 4%
+background-size: 6%
+
+# .large[R Markdown]
+
+--
+
+<br><br>
+
+.font90[.green[Open `rmd-basics.Rmd` to follow along]]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+```{r rmarkdown_wizards, echo=FALSE, out.width="70%", out.height="70%"}
+# copy_slide_images("rmarkdown_wizards.png")
+knitr::include_graphics("www/rmarkdown_wizards.png")
+```
+
+.footer-large[.right[Artwork by @allison_horst]]
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# How R Markdown Works
+
+#### R Markdown combines .red[metadata], prose, *and* executable code 
+
+```{r rmd-yaml, echo = FALSE, out.height="90%", out.width="90%", fig.align='center'}
+knitr::include_graphics("www/rmd-yaml.png")
+```
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# How R Markdown Works
+
+#### R Markdown combines metadata, .red[prose], *and* executable code 
+
+```{r rmd-md, echo = FALSE, out.height="85%", out.width="85%", fig.align='center'}
+knitr::include_graphics("www/rmd-md.png")
+```
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# How R Markdown Works
+
+#### R Markdown combines metadata, prose, *and* .red[executable code] 
+
+```{r rmd-code, echo = FALSE, out.height="75%", out.width="75%", fig.align='center'}
+knitr::include_graphics("www/rmd-code.png")
+```
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+## `.yaml` = Metadata
+### ~~`.md` = Prose~~  
+### ~~`.R` = Code~~
+
+--
+
+### YAML is a human friendly data serialization standard for all programming languages.
+
+--
+
+### YAML stands for *'YAML Ain't Markup Language'* (funny, huh?)
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+<br><br>
+
+.leftcol[
+
+### YAML contains the information about the document we're going to create
+
+]
+
+.rightcol[
+.code120[
+
+```yml
+---
+title: "Untitled"
+author: "John Doe"
+output: html_document
+---
+```
+
+]
+]
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+<br>
+
+```{r yaml-formatting-01, echo = FALSE, out.height="100%", out.width="100%", fig.align='center'}
+knitr::include_graphics("www/yaml-formatting-01.png")
+```
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+<br>
+
+```{r yaml-formatting-02, echo = FALSE, out.height="60%", out.width="60%", fig.align='center'}
+knitr::include_graphics("www/yaml-formatting-02.png")
+```
+
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+<br>
+
+.leftcol[
+
+#### Table of contents: 
+
+.font90[**`toc:`** binary (**`yes`** or **`no`**)]
+
+.font90[**`toc_float:`** logical (**`true`** or **`false`**)]
+
+.font90[**`toc_depth:`** set numerically **`0`** - **`6`**]
+
+
+]
+
+
+
+.rightcol[
+
+#### _Indentation matters in YAML!!_
+
+> Check out the [YAML Fieldguide](https://cran.r-project.org/web/packages/ymlthis/vignettes/yaml-fieldguide.html) for a comprehensive list
+
+]
+
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### Create a floating table of contents
+
+.leftcol60[
+
+.font90[Open the **`rmd-basic.Rmd`** file in the `worksheets` folder] 
+
+.font90[Change the `output` in the YAML header to the following:]
+
+]
+
+--
+
+.rightcol40[
+.code70[
+
+```yml
+---
+title: "R Markdown Basics"
+author: ""
+date: ""
+output: 
+  html_document: 
+    toc: yes
+    toc_float: true
+---
+```
+
+]
+]
+
+--
+
+.font90[***Knit the document again***]
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML 
+
+### Floating table of contents (rendered)
+
+```{r yaml-toc-settings, echo = FALSE, out.height="90%", out.width="90%", fig.align='center'}
+knitr::include_graphics("www/yaml-toc-settings.png")
+```
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### Text highlighting and theme options
+
+.leftcol[
+
+.font90[Add **`highlight`** and **`theme`** to the YAML header]
+
+]
+
+.rightcol[
+.code80[
+
+```yml
+---
+title: "R Markdown Basics"
+author: ""
+date: ""
+output: 
+  html_document: 
+    toc: yes
+    toc_float: yes
+    highlight: zenburn 
+    theme: united 
+
+---
+```
+
+]
+]
+
+--
+
+#### *Knit the document again*
+
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### Text highlighting and theme options (rendered)
+
+```{r yaml-highlight-theme, echo = FALSE, out.height="90%", out.width="90%", fig.align='center'}
+knitr::include_graphics("www/yaml-highlight-theme.png")
+```
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+
+.leftcol40[
+
+### You can change the YAML contents using the settings (small gear)
+
+]
+
+
+.rightcol60[
+
+```{r knitr-settings, echo = FALSE, out.height="70%", out.width="70%", fig.align='center'}
+knitr::include_graphics("www/knitr-settings.png")
+```
+
+]
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+.leftcol[
+
+### This window gives us the ability to manually change some of the YAML settings (but not all of them!)
+
+]
+
+--
+
+.rightcol[
+
+```{r edit-rmd-output-options, echo = FALSE, out.height="90%", out.width="90%", fig.align='left'}
+knitr::include_graphics("www/edit-rmd-output-options.png")
+```
+
+]
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+.leftcol40[
+
+### .font80[Change the **Output Format** to **PDF**]
+
+### .font70[Adjust the level of header in the table of contents to **4**]
+
+### .font70[Set the syntax highlighting to **espresso**]
+
+]
+
+.rightcol60[
+
+```{r pdf-rmd-output-options, echo = FALSE, out.height="80%", out.width="80%", fig.align='center'}
+knitr::include_graphics("www/pdf-rmd-output-options.png")
+```
+]
+
+--
+
+#### .font80[*Knit the document again*]
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### .font80[PDF Document Options (rendered)]
+
+.leftcol20[
+
+### .font80[A new window will open with the PDF preview]
+
+]
+
+.rightcol80[
+
+```{r rmd-pdf-rendered-output, echo = FALSE, out.height="85%", out.width="85%", fig.align='center'}
+knitr::include_graphics("www/rmd-pdf-rendered-output.png")
+```
+
+]
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### .font80[Common output formats]
+
+```{r rmd-exports, echo = FALSE, out.height="37%", out.width="37%", fig.align='center'}
+knitr::include_graphics("www/rmd-exports.png")
+```
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: YAML
+
+### Output formats
+
+.font80[
+
+| Function                    | Outputs             |
+|-----------------------------|---------------------|
+| `html_document()`           | HTML document       |
+| `pdf_document()`            | PDF document        |
+| `word_document()`           | Word document       |
+| `odt_document()`            | ODT document        |
+| `rtf_document()`            | RTF document        |
+| `md_document()`             | Markdown document   |
+| `slidy_presentation()`      | Slidy Slides (HTML) |
+| `beamer_presentation()`     | Beamer Slides (PDF) |
+| `ioslides_presentation()`   | ioslides (HTML)     |
+| `powerpoint_presentation()` | PowerPoint (pptx)   |
+
+]
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+
+# R Markdown: Markdown
+
+### ~~`.yaml` = Metadata~~
+## `.md` = Prose
+### ~~`.R` = Code~~
+
+
+---
+class: left, top
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Markdown
+
+.leftcol[.large[
+
+#### Italics, Bold, and Code
+
+```markdown
+For italics, you can use *this* or _this_.
+
+If you want bold, you can use **this** or __this__. 
+
+If you want text formatted as code, you can use `this`.
+```
+
+]]
+
+--
+
+.rightcol[.font90[
+
+<br><br><br>
+
+For italics, you can use *this* or _this_.
+
+If you want bold, you can use **this** or __this__. 
+
+If you want text formatted as code, you can use `this`.
+
+]]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+.leftcol[.large[
+
+#### Headers
+
+```md
+# Header 1
+## Header 2
+### Header 3
+```
+
+]]
+
+--
+
+.rightcol[.large[.center[
+
+# Header 1  
+## Header 2  
+### Header 3 
+
+]]]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+.cols3[
+
+#### Bullets & Numeric Lists
+
+]
+
+.cols3[
+
+<br>
+
+```markdown
+  - Item 1  
+  - Item 2
+      + Item 2a
+      + Item 2b
+        - Item 2b.1
+        - Item 2b.2
+    
+ 1. Item 1
+ 2. Item 2  
+   a. Item 2a  
+   b. Item 2b  
+```
+  
+]
+
+.cols3[
+
+<br>
+
+* Item 1  
+* Item 2
+    + Item 2a
+    + Item 2b
+      - Item 2b.1
+      - Item 2b.2
+
+
+ 1. Item 1
+ 2. Item 2  
+   a. Item 2a  
+   b. Item 2b  
+ 
+]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+
+.leftcol55[
+
+#### Hyperlinks 
+
+```md
+[linked phrase](https://posit.co/)
+```
+
+
+
+]
+
+
+--
+
+.rightcol45[
+
+#### *becomes...*
+
+.center[.large[
+
+[linked phrase](https://posit.co/)
+
+]]]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+
+# R Markdown: Markdown
+
+.leftcol55[
+
+#### Images 
+
+.small[
+
+```md
+![](https://www.r-project.org/logo/Rlogo.png)
+
+![optional caption](https://www.r-project.org/logo/Rlogo.png)
+```
+
+]]
+
+--
+
+.rightcol45[
+
+#### *becomes...*
+
+```{r Rlogo.png, echo = FALSE, out.height="30%", out.width="30%", fig.align='center'}
+knitr::include_graphics("https://www.r-project.org/logo/Rlogo.png")
+```
+
+]
+
+
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+.leftcol[
+
+#### Math Equations
+
+```md
+$equation$
+
+$$ equation $$
+```
+
+]
+
+--
+
+<br>
+
+.rightcol[.large[
+
+$equation$
+
+$$ equation $$
+
+]]
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+.leftcol45[
+
+#### Strike-through
+
+```md
+~~strikethrough~~
+```
+
+]
+
+--
+
+<br>
+
+.rightcol55[.center[.large[
+
+ ~~strikethrough~~
+
+]]]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+class: left, top
+
+# R Markdown: Markdown
+
+.font90[In `rmd-basic.Rmd`, add the following paragraph in the **R Markdown** section, after the first sentence.]
+
+--
+
+> R Markdown is a plain-text file format that combines narrative text (with markdown, a lightweight markup syntax) and executable code chunks (R, Python, or SQL) to produce multiple output formats (.html, .pdf, .docx, .pptx, etc.)
+
+--
+
+.leftcol[
+.font80[
+- make 'plain-text' *italic*
+
+- insert the wikipedia page link for [markdown](https://en.wikipedia.org/wiki/Markdown): 
+`https://en.wikipedia.org/wiki/Markdown`
+]
+]
+
+.rightcol[
+.font80[
+- make the code languages **bold**  
+
+- format the file extensions as `code`
+]
+]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### ~~`.yaml` = Metadata~~
+### ~~`.md` = Prose~~
+## `.R` = Code
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### `setup` code chunk
+
+.font90[The first bit of R code in our RMarkdown file is the `setup` chunk]
+
+--
+
+```{r setup-code-chunk, fig.align='center', echo = FALSE, out.height="70%", out.width="70%"}
+knitr::include_graphics("www/setup-code-chunk.png")
+```
+
+--
+
+.font90[Chunks named '`setup`' are special because they can set global options, and they are run first]
+
+--
+
+.font90['`include=FALSE`' means this code is run, but not displayed]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### `setup` code chunk contents
+
+```{r setup-code-chunk-02, fig.align='center', echo = FALSE, out.height="70%", out.width="70%"}
+knitr::include_graphics("www/setup-code-chunk.png")
+```
+
+--
+
+.leftcol30[
+
+.font90[Load packages]
+
+.code70[
+```{r , eval=FALSE}
+library(knitr)
+library(rmarkdown)
+```
+]
+
+]
+
+--
+
+.rightcol70[
+
+.font90[Set the URLs for the repositories used by `update.packages`]
+
+.code70[
+```{r , eval=FALSE}
+options(repos = "https://cloud.r-project.org")
+```
+]
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### `setup` code chunk options
+
+.leftcol60[
+
+.font90[R Markdown code document options come from the `knitr` package]
+
+```{r setup-code-chunk-03, fig.align='left', echo = FALSE, out.height="100%", out.width="100%"}
+knitr::include_graphics("www/setup-code-chunk.png")
+```
+
+]
+
+--
+
+.rightcol40[
+
+.font90[We can set the chunk and knit options the with syntax below:]
+
+```{r knitr-opts-set, eval = FALSE}
+knitr::opts_chunk$set()
+knitr::opts_knit$set()
+```
+
+]
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Inserting code chunks
+
+
+.leftcol[
+
+.font120[Use keyboard shortcuts **CMD/CTRL + I** or **ALT/OPTION + I**]
+
+
+]
+
+--
+
+.rightcol[
+
+```{r insert-code-chunk, echo = FALSE, out.height="36%", out.width="36%", fig.align='center'}
+knitr::include_graphics("www/insert-code-chunk.png")
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Code chunks
+
+<br>
+
+.border[
+
+```{r code-chunks, echo = FALSE, out.height="100%", out.width="100%", fig.align='center'}
+knitr::include_graphics("www/code-chunks.png")
+```
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Code chunk fences
+
+<br>
+
+```{r code-chunk-fences, echo = FALSE, out.height="100%", out.width="100%", fig.align='center'}
+knitr::include_graphics("www/code-chunk-fences.png")
+```
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Code chunk names and options
+
+<br>
+
+```{r code-chunk-label-options, echo = FALSE, out.height="100%", out.width="100%", fig.align='center'}
+knitr::include_graphics("www/code-chunk-name-options.png")
+```
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Code chunk options
+
+.leftcol[
+
+.font80[Common options for code chunks are:]
+
+.font70[
+
+|Option          | Document Effect                              |
+|:-------------- |:-------------------------------------------- |
+|`include`       | run code, but do/don't print code and results|
+|`eval`          | do/don't evaluate the code                   |
+|`echo`          | do/don't print code                          |
+|`message`       | do/don't print function messages             |
+|`warning`       | do/don't print function warnings             |
+|`error`         | do/don't knit document with errors           |
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.font80[More advanced options can control language engines (`engine`), caching (`cache`, `dependson`), and plot animations (`fig.show`)]
+
+.font80[See the [knitr web page](https://yihui.name/knitr/options/) for complete list of options]
+
+]
+
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+.leftcol[
+
+.font90[In the `rmd-basic.Rmd` file, delete the **`pressure`** code chunk]
+
+.font90[Insert a new code chunk and name it **`diamonds`**]
+
+.font90[Add the code below]
+
+.code70[
+
+```{r diamonds, eval=FALSE}
+ggplot(data = diamonds, 
+          aes(x = carat, y = price)) + 
+  geom_point(aes(color = cut))
+```
+
+.font90[Set **`echo`** to **`FALSE`**]
+
+]
+
+]
+
+--
+
+.rightcol[
+
+.font90[Create another code chunk and name it **`diamonds-show`**]
+
+.font90[Set the options to display this code, but not execute it]
+
+.font90[**Knit the document**]
+
+]
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+```{r rmd-chunk-diamonds-show, echo = FALSE, out.height="65%", out.width="65%", fig.align='center'}
+knitr::include_graphics("www/rmd-chunk-diamonds-show.png")
+```
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Edit code chunk options
+
+You can also edit code chunk options using the icon (small gear)
+
+```{r code-chunk-settings, echo = FALSE, out.height="40%", out.width="40%", fig.align='center'}
+knitr::include_graphics("www/code-chunk-settings.png")
+```
+
+
+
+
+---
+background-image: url(www/pdg-hex.png)
+background-position: 96% 4%
+background-size: 6%
+
+# R Markdown: Code
+
+### Code Chunk Engines
+
+More and more code engines all the time 
+
+```{r knit_engines}
+names(knitr::knit_engines$get())
+```
